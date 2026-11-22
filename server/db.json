@@ -1146,7 +1146,7 @@
       "message": "Dr. Sarah Jenkins posted the Fall 2026 examination schedule. Check announcements for details.",
       "type": "announcement",
       "link": "announcements",
-      "read": true,
+      "read": false,
       "createdAt": "2026-11-21T10:05:00Z"
     },
     {

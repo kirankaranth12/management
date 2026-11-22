@@ -55,6 +55,16 @@ function DashboardContent() {
 export default function App() {
   const { user } = useApp();
 
+  // If user is not logged in, show full-screen Authentication Portal (Register first, then login)
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans">
+        <AuthPage initialMode="register" />
+        <Toast />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans">
       <Navbar />

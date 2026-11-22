@@ -196,6 +196,9 @@ export function AppProvider({ children }) {
   const logout = () => {
     const name = user ? user.name : 'User';
     setUser(null);
+    try {
+      localStorage.removeItem('campusconnect_user');
+    } catch (e) {}
     setActiveTab('home');
     showToast(`Signed out successfully. Goodbye ${name}!`, 'info');
   };
@@ -495,13 +498,15 @@ export function AppProvider({ children }) {
     showToast('All notifications marked as read.', 'info');
   };
 
-  // Reset to demo (Full wipe to clean baseline)
+  // Reset to demo (Full wipe to clean baseline & return to start)
   const resetToDemo = async () => {
     try {
       localStorage.removeItem('campusconnect_db');
+      localStorage.removeItem('campusconnect_user');
     } catch (e) {}
+    setUser(null);
     await api.resetSystem();
-    showToast('All values and data reset to clean defaults successfully!', 'info');
+    showToast('All values reset to clean baseline! Ready to register or log in from start.', 'info');
     await refreshAllData();
   };
 
