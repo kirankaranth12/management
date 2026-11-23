@@ -183,7 +183,7 @@ export default function StudentPortalPage() {
       {/* Portal Header */}
       <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-blue-600 to-sky-500 text-white flex items-center justify-center shadow-lg shadow-blue-500/20">
+          <div className="w-14 h-14 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-sm">
             <GraduationCap className="w-7 h-7" />
           </div>
           <div>
@@ -729,7 +729,7 @@ export default function StudentPortalPage() {
             <button
               type="submit"
               disabled={isSubmittingComp}
-              className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold shadow-lg shadow-blue-500/25 transition-all flex items-center justify-center gap-2"
+              className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md transition-all flex items-center justify-center gap-2"
             >
               {isSubmittingComp ? 'Dispatching Ticket...' : 'Submit Complaint & Forward to Department'}
               <Check className="w-4 h-4" />

@@ -45,7 +45,7 @@ export default function HomePage() {
       title: 'Student Portal',
       description: 'Attendance, timetable, academic grades, complaint registration & lost & found.',
       icon: GraduationCap,
-      color: 'from-blue-600 to-sky-600',
+      color: 'bg-blue-600',
       badge: 'Academic Hub',
       stat: '3.85 CGPA • 91.5% Att'
     },
@@ -54,7 +54,7 @@ export default function HomePage() {
       title: 'Cleaning Department',
       description: 'Report unclean areas, assign sanitation crew, track live cleaning progress & hygiene.',
       icon: Sparkles,
-      color: 'from-amber-500 to-orange-600',
+      color: 'bg-amber-600',
       badge: `${cleaningPending} Active Tasks`,
       stat: '98% Hygiene Score'
     },
@@ -63,7 +63,7 @@ export default function HomePage() {
       title: 'Management Department',
       description: 'Campus operations, departmental budgets, cross-college complaint oversight & announcements.',
       icon: Building2,
-      color: 'from-purple-600 to-indigo-700',
+      color: 'bg-purple-600',
       badge: 'Administration',
       stat: '7 Departments Active'
     },
@@ -72,7 +72,7 @@ export default function HomePage() {
       title: 'HR Department',
       description: 'Staff directory, employee profiles, daily attendance logs, and leave approval queue.',
       icon: Users2,
-      color: 'from-rose-500 to-pink-600',
+      color: 'bg-rose-600',
       badge: 'Staff Management',
       stat: '185 Faculty Members'
     },
@@ -81,7 +81,7 @@ export default function HomePage() {
       title: 'Student Counselling Dept',
       description: 'Confidential 1-on-1 mental health sessions, academic guidance, and wellness resources.',
       icon: HeartHandshake,
-      color: 'from-teal-500 to-emerald-600',
+      color: 'bg-teal-600',
       badge: 'Strictly Confidential',
       stat: 'Dr. Maya Patel Available'
     },
@@ -90,7 +90,7 @@ export default function HomePage() {
       title: 'Student Leader Dept',
       description: 'Student Council, Class Reps, suggestion voting forum, and campus event coordination.',
       icon: Award,
-      color: 'from-indigo-600 to-blue-700',
+      color: 'bg-indigo-600',
       badge: 'Student Council',
       stat: '3 Live Campus Events'
     },
@@ -99,7 +99,7 @@ export default function HomePage() {
       title: 'Faculty Portal',
       description: 'Mark student attendance, post course notices, manage student academic complaints.',
       icon: BookOpenCheck,
-      color: 'from-emerald-600 to-teal-700',
+      color: 'bg-emerald-600',
       badge: 'Lectures & Attendance',
       stat: 'Semester Classes Roster'
     },
@@ -108,7 +108,7 @@ export default function HomePage() {
       title: 'Notifications Center',
       description: 'Real-time alerts for complaints status updates, announcements, and task assignments.',
       icon: Bell,
-      color: 'from-slate-700 to-slate-900',
+      color: 'bg-slate-700',
       badge: unreadNotifsCount > 0 ? `${unreadNotifsCount} Unread` : 'All Caught Up',
       stat: 'Instant Multi-Channel'
     }
@@ -118,7 +118,7 @@ export default function HomePage() {
     <div className="space-y-6 animate-fade-in">
       
       {/* Welcome Banner */}
-      <div className="relative rounded-3xl bg-gradient-to-r from-blue-700 via-blue-800 to-indigo-900 p-6 sm:p-8 text-white shadow-xl overflow-hidden">
+      <div className="relative rounded-3xl bg-blue-800 p-6 sm:p-8 text-white shadow-lg overflow-hidden">
         <div className="absolute top-0 right-0 -mr-16 -mt-16 w-80 h-80 rounded-full bg-blue-400/20 blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 right-1/4 -mb-16 w-64 h-64 rounded-full bg-indigo-500/20 blur-2xl pointer-events-none" />
 
@@ -251,7 +251,7 @@ export default function HomePage() {
               >
                 <div>
                   <div className="flex items-start justify-between mb-3">
-                    <div className={`w-11 h-11 rounded-xl bg-gradient-to-tr ${card.color} text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
+                    <div className={`w-11 h-11 rounded-xl ${card.color} text-white flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform`}>
                       <Icon className="w-5 h-5" />
                     </div>
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200">

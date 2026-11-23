@@ -188,7 +188,7 @@ export default function Sidebar() {
 
         {/* User Mini Card in Sidebar */}
         {user ? (
-          <div className="p-4 mx-3 my-2 rounded-xl bg-gradient-to-br from-blue-50/80 via-white to-slate-50 border border-blue-100/60 shadow-xs">
+          <div className="p-4 mx-3 my-2 rounded-xl bg-slate-50 border border-slate-200 shadow-xs">
             <div className="flex items-center gap-3">
               <img
                 src={user.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`}

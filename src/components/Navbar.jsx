@@ -97,12 +97,12 @@ export default function Navbar() {
               onClick={() => navigate('home')} 
               className="flex items-center gap-3 cursor-pointer group select-none"
             >
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-700 via-blue-600 to-sky-500 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform duration-200">
+              <div className="w-10 h-10 rounded-xl bg-blue-700 flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform duration-200">
                 <GraduationCap className="w-6 h-6" />
               </div>
               <div className="hidden sm:block">
                 <div className="flex items-center gap-1.5">
-                  <span className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-blue-900 to-blue-700 bg-clip-text text-transparent">
+                  <span className="font-extrabold text-lg tracking-tight text-blue-900">
                     CampusConnect
                   </span>
                   <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-sm bg-blue-100 text-blue-800">

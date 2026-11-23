@@ -131,7 +131,7 @@ export default function CleaningDepartmentPage() {
       {/* Header Banner */}
       <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-600 text-white flex items-center justify-center shadow-lg shadow-amber-500/20">
+          <div className="w-14 h-14 rounded-2xl bg-amber-600 text-white flex items-center justify-center shadow-sm">
             <Sparkles className="w-7 h-7" />
           </div>
           <div>
