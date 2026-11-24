@@ -7,7 +7,7 @@ import { initialData } from './initialData.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const DB_FILE = path.join(__dirname, 'db.json');
+const DB_FILE = process.env.VERCEL ? path.join('/tmp', 'db.json') : path.join(__dirname, 'db.json');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -1270,7 +1270,11 @@ if (fs.existsSync(distPath)) {
   });
 }
 
-app.listen(PORT, () => {
-  console.log(`CampusConnect Server listening on port ${PORT}`);
-});
+if (process.env.VERCEL !== '1') {
+  app.listen(PORT, () => {
+    console.log(`CampusConnect Server listening on port ${PORT}`);
+  });
+}
+
+export default app;
 

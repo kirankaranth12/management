@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import { 
-  Users2, 
-  UserCheck, 
-  Calendar, 
-  Clock, 
-  CheckCircle2, 
-  AlertCircle, 
-  Search, 
-  Plus, 
-  Check, 
-  X, 
-  FileText, 
+import {
+  Users2,
+  UserCheck,
+  Calendar,
+  Clock,
+  CheckCircle2,
+  AlertCircle,
+  Search,
+  Plus,
+  Check,
+  X,
+  FileText,
   Award,
   Phone,
   Mail,
@@ -19,13 +19,13 @@ import {
 import { useApp } from '../context/AppContext';
 
 export default function HRDepartmentPage() {
-  const { 
-    hrEmployees, 
-    leaveRequests, 
-    submitLeaveRequest, 
-    updateLeaveStatus, 
+  const {
+    hrEmployees,
+    leaveRequests,
+    submitLeaveRequest,
+    updateLeaveStatus,
     user,
-    showToast 
+    showToast
   } = useApp();
 
   const [activeTab, setActiveTab] = useState('employees'); // 'employees' | 'attendance' | 'leaves' | 'dept-wise'
@@ -74,8 +74,8 @@ export default function HRDepartmentPage() {
   const filteredEmployees = hrEmployees.filter(emp => {
     const matchesDept = deptFilter === 'All' || emp.department === deptFilter;
     const matchesSearch = emp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          emp.designation.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          emp.email.toLowerCase().includes(searchQuery.toLowerCase());
+      emp.designation.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      emp.email.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesDept && matchesSearch;
   });
 
@@ -83,7 +83,7 @@ export default function HRDepartmentPage() {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      
+
       {/* Header Banner */}
       <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
@@ -155,9 +155,8 @@ export default function HRDepartmentPage() {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`px-4 py-2 text-xs font-bold rounded-xl transition-all ${
-              activeTab === tab.id ? 'bg-white text-rose-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
-            }`}
+            className={`px-4 py-2 text-xs font-bold rounded-xl transition-all ${activeTab === tab.id ? 'bg-white text-rose-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
+              }`}
           >
             {tab.label}
           </button>
@@ -167,7 +166,7 @@ export default function HRDepartmentPage() {
       {/* ===================== TAB 1: EMPLOYEES DIRECTORY ===================== */}
       {activeTab === 'employees' && (
         <div className="space-y-4">
-          
+
           {/* Filter Bar */}
           <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
             <div className="flex items-center gap-2">
@@ -220,9 +219,8 @@ export default function HRDepartmentPage() {
                       </div>
                     </div>
 
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                      emp.status === 'Present' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
-                    }`}>
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${emp.status === 'Present' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+                      }`}>
                       {emp.status}
                     </span>
                   </div>
@@ -265,62 +263,61 @@ export default function HRDepartmentPage() {
               </div>
             ) : (
               leaveRequests.map((leave) => (
-              <div key={leave.id} className="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs">
-                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1.5">
-                      <span className="font-mono text-xs font-bold text-rose-700 bg-rose-100 px-2 py-0.5 rounded">
-                        {leave.id}
-                      </span>
-                      <strong className="text-xs text-slate-800">{leave.employeeName}</strong>
-                      <span className="text-xs text-slate-500">({leave.department})</span>
-                    </div>
-
-                    <div className="text-xs font-semibold text-slate-900 mt-1">
-                      {leave.leaveType} • 📅 {leave.startDate} to {leave.endDate} ({leave.days} Days)
-                    </div>
-
-                    <p className="text-xs text-slate-600 mt-2 bg-slate-50 p-3 rounded-xl border border-slate-100">
-                      Reason: "{leave.reason}"
-                    </p>
-
-                    {leave.reviewerComments && (
-                      <p className="text-[11px] text-rose-900 bg-rose-50/70 p-2 rounded-lg mt-2 font-medium">
-                        HR Note: {leave.reviewerComments} (Reviewed by {leave.reviewedBy})
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Actions */}
-                  <div className="flex flex-col gap-2 shrink-0 sm:items-end">
-                    <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
-                      leave.status === 'Approved' ? 'bg-emerald-100 text-emerald-800' : (leave.status === 'Rejected' ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-800')
-                    }`}>
-                      {leave.status}
-                    </span>
-
-                    {leave.status === 'Pending' && (
-                      <div className="flex items-center gap-2 mt-2">
-                        <button
-                          onClick={() => updateLeaveStatus(leave.id, 'Approved', 'Leave sanctioned with salary credit.')}
-                          className="px-3 py-1.5 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg shadow-xs flex items-center gap-1"
-                        >
-                          <Check className="w-3.5 h-3.5" />
-                          Approve
-                        </button>
-                        <button
-                          onClick={() => updateLeaveStatus(leave.id, 'Rejected', 'Alternate dates recommended due to exam duty.')}
-                          className="px-3 py-1.5 text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white rounded-lg shadow-xs flex items-center gap-1"
-                        >
-                          <X className="w-3.5 h-3.5" />
-                          Reject
-                        </button>
+                <div key={leave.id} className="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs">
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <span className="font-mono text-xs font-bold text-rose-700 bg-rose-100 px-2 py-0.5 rounded">
+                          {leave.id}
+                        </span>
+                        <strong className="text-xs text-slate-800">{leave.employeeName}</strong>
+                        <span className="text-xs text-slate-500">({leave.department})</span>
                       </div>
-                    )}
+
+                      <div className="text-xs font-semibold text-slate-900 mt-1">
+                        {leave.leaveType} • 📅 {leave.startDate} to {leave.endDate} ({leave.days} Days)
+                      </div>
+
+                      <p className="text-xs text-slate-600 mt-2 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                        Reason: "{leave.reason}"
+                      </p>
+
+                      {leave.reviewerComments && (
+                        <p className="text-[11px] text-rose-900 bg-rose-50/70 p-2 rounded-lg mt-2 font-medium">
+                          HR Note: {leave.reviewerComments} (Reviewed by {leave.reviewedBy})
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex flex-col gap-2 shrink-0 sm:items-end">
+                      <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${leave.status === 'Approved' ? 'bg-emerald-100 text-emerald-800' : (leave.status === 'Rejected' ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-800')
+                        }`}>
+                        {leave.status}
+                      </span>
+
+                      {leave.status === 'Pending' && (
+                        <div className="flex items-center gap-2 mt-2">
+                          <button
+                            onClick={() => updateLeaveStatus(leave.id, 'Approved', 'Leave sanctioned with salary credit.')}
+                            className="px-3 py-1.5 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg shadow-xs flex items-center gap-1"
+                          >
+                            <Check className="w-3.5 h-3.5" />
+                            Approve
+                          </button>
+                          <button
+                            onClick={() => updateLeaveStatus(leave.id, 'Rejected', 'Alternate dates recommended due to exam duty.')}
+                            className="px-3 py-1.5 text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white rounded-lg shadow-xs flex items-center gap-1"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                            Reject
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            )))}
+              )))}
           </div>
         </div>
       )}
@@ -347,9 +344,8 @@ export default function HRDepartmentPage() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${
-                    emp.status === 'Present' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
-                  }`}>
+                  <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${emp.status === 'Present' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+                    }`}>
                     {emp.status}
                   </span>
                 </div>
