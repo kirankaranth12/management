@@ -20,6 +20,7 @@ import {
   Edit3
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import Avatar from '../components/Avatar';
 
 export default function FacultyPortalPage() {
   const { 
@@ -711,10 +712,11 @@ export default function FacultyPortalPage() {
       {activeTab === 'profile' && (
         <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs max-w-2xl mx-auto space-y-4">
           <div className="flex items-center gap-4 pb-4 border-b border-slate-100">
-            <img
-              src={user?.avatar || "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80"}
-              alt="Faculty Avatar"
-              className="w-20 h-20 rounded-2xl object-cover ring-2 ring-emerald-500/20"
+            <Avatar
+              src={user?.avatar}
+              name={user?.name || 'Faculty Member'}
+              className="w-20 h-20 rounded-2xl"
+              textClassName="text-xl"
             />
             <div>
               <h3 className="text-lg font-black text-slate-900">{user?.name || 'Faculty Member'}</h3>

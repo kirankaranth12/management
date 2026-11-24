@@ -97,7 +97,7 @@ app.post('/api/auth/register', (req, res) => {
     role: role || 'Student',
     department: department || 'General',
     phone: phone || '+1 (555) 000-0000',
-    avatar: avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name)}`,
+    avatar: avatar || '',
     rollNo: rollNo || (role === 'Student' ? `CS24B${Math.floor(100 + Math.random() * 900)}` : undefined),
     employeeCode: employeeCode || (role !== 'Student' ? `EMP-${generatedId}` : undefined),
     bio: bio || `Registered ${role} in ${department || 'College'}.`,
@@ -679,7 +679,7 @@ app.post('/api/hr/employees', (req, res) => {
     leaveBalance: { casual: 12, sick: 10, earned: 15 },
     phone: phone || '+1 (555) 000-0000',
     qualifications: qualifications || 'Bachelor Degree',
-    avatar: avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name)}`
+    avatar: avatar || ''
   };
 
   db.data.hrEmployees.push(newEmp);

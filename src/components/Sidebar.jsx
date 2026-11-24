@@ -17,6 +17,7 @@ import {
   Lock
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import Avatar from './Avatar';
 
 export default function Sidebar() {
   const { 
@@ -191,10 +192,11 @@ export default function Sidebar() {
         {user ? (
           <div className="p-4 mx-3 my-2 rounded-xl bg-slate-50 border border-slate-200 shadow-xs">
             <div className="flex items-center gap-3">
-              <img
-                src={user.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`}
-                alt={user.name}
-                className="w-10 h-10 rounded-xl object-cover ring-2 ring-blue-500/20 shadow-xs"
+              <Avatar
+                src={user.avatar}
+                name={user.name}
+                className="w-10 h-10 rounded-xl"
+                textClassName="text-xs"
               />
               <div className="min-w-0 flex-1">
                 <p className="text-xs font-bold text-slate-900 truncate">{user.name}</p>

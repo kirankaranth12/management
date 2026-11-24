@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { api } from '../services/api';
+import Avatar from '../components/Avatar';
 
 export default function ProfilePage() {
   const { user, updateUserProfile, showToast, role } = useApp();
@@ -23,7 +24,7 @@ export default function ProfilePage() {
   const [phone, setPhone] = useState(user?.phone || '');
   const [bio, setBio] = useState(user?.bio || '');
   const [avatar, setAvatar] = useState(user?.avatar || '');
-  const [avatarPreview, setAvatarPreview] = useState(user?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80');
+  const [avatarPreview, setAvatarPreview] = useState(user?.avatar || '');
 
   // Change password modal
   const [passModalOpen, setPassModalOpen] = useState(false);
@@ -31,16 +32,6 @@ export default function ProfilePage() {
   const [newPass, setNewPass] = useState('');
   const [confirmPass, setConfirmPass] = useState('');
   const [isChangingPass, setIsChangingPass] = useState(false);
-
-  // Avatar presets
-  const presets = [
-    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&auto=format&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80'
-  ];
 
   // Handle Photo File Upload
   const handlePhotoUpload = (e) => {
@@ -129,31 +120,45 @@ export default function ProfilePage() {
       <form onSubmit={handleSaveProfile} className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-xs space-y-6">
         
         {/* Profile Photo Customization */}
-        <div className="p-5 rounded-2xl bg-blue-50/60 border border-blue-100/80 flex flex-col sm:flex-row sm:items-center gap-5">
-          <div className="relative group shrink-0">
-            <img
-              src={avatarPreview}
-              alt="Avatar"
-              className="w-20 h-20 rounded-2xl object-cover ring-4 ring-white shadow-md"
-            />
-            <label
-              htmlFor="profile-photo-change"
-              className="absolute inset-0 bg-slate-900/40 rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity text-white text-[10px] font-bold"
-            >
-              <Camera className="w-5 h-5" />
-            </label>
+        <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row sm:items-center gap-5">
+          <div className="relative shrink-0">
+            {avatarPreview && !avatarPreview.includes('images.unsplash.com') && !avatarPreview.includes('dicebear') ? (
+              <img
+                src={avatarPreview}
+                alt="Profile Preview"
+                className="w-20 h-20 rounded-2xl object-cover ring-4 ring-white shadow-md"
+              />
+            ) : (
+              <Avatar src="" name={name || user?.name} className="w-20 h-20 text-xl" />
+            )}
           </div>
 
           <div className="flex-1 min-w-0">
-            <h4 className="text-xs font-bold text-slate-900 mb-1">Update Profile Photograph</h4>
-            <div className="flex items-center gap-2">
+            <h4 className="text-xs font-bold text-slate-900 mb-1">Profile Photograph</h4>
+            <p className="text-xs text-slate-500 mb-3">
+              Upload your own real photo from your device.
+            </p>
+            <div className="flex flex-wrap items-center gap-2">
               <label
                 htmlFor="profile-photo-change"
-                className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-xs transition-colors"
+                className="cursor-pointer inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-xs transition-colors"
               >
-                <UploadCloud className="w-3.5 h-3.5" />
-                Upload New Image
+                <UploadCloud className="w-4 h-4" />
+                {avatarPreview ? 'Change Photo' : 'Upload Photo'}
               </label>
+              {avatarPreview && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAvatar('');
+                    setAvatarPreview('');
+                    showToast('Photo removed. Click "Save Profile Changes" to persist.', 'info');
+                  }}
+                  className="px-3.5 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold transition-colors"
+                >
+                  Remove Photo
+                </button>
+              )}
               <input
                 id="profile-photo-change"
                 type="file"
@@ -161,28 +166,6 @@ export default function ProfilePage() {
                 onChange={handlePhotoUpload}
                 className="hidden"
               />
-            </div>
-
-            {/* Quick Presets */}
-            <div className="mt-3 flex items-center gap-2">
-              <span className="text-[11px] text-slate-500 font-medium">Or choose avatar:</span>
-              <div className="flex items-center gap-1.5">
-                {presets.map((p, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    onClick={() => {
-                      setAvatar(p);
-                      setAvatarPreview(p);
-                    }}
-                    className={`w-7 h-7 rounded-lg overflow-hidden border-2 transition-transform ${
-                      avatarPreview === p ? 'border-blue-600 scale-110 ring-2 ring-blue-500/20' : 'border-transparent opacity-70 hover:opacity-100'
-                    }`}
-                  >
-                    <img src={p} alt="Preset" className="w-full h-full object-cover" />
-                  </button>
-                ))}
-              </div>
             </div>
           </div>
         </div>

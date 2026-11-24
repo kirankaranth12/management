@@ -14,6 +14,7 @@ import {
   RotateCcw
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import Avatar from './Avatar';
 
 export default function Navbar() {
   const { 
@@ -293,10 +294,11 @@ export default function Navbar() {
                   onClick={() => setProfileOpen(!profileOpen)}
                   className="flex items-center gap-2 p-1.5 pl-2 rounded-xl hover:bg-slate-100 border border-transparent hover:border-slate-200 transition-all focus:outline-hidden"
                 >
-                  <img
-                    src={user.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`}
-                    alt={user.name}
-                    className="w-8 h-8 rounded-lg object-cover bg-slate-100 border border-slate-200"
+                  <Avatar
+                    src={user.avatar}
+                    name={user.name}
+                    className="w-8 h-8 rounded-lg"
+                    textClassName="text-[10px]"
                   />
                   <div className="hidden sm:block text-left">
                     <p className="text-xs font-bold text-slate-800 leading-none truncate max-w-[110px]">
@@ -312,10 +314,11 @@ export default function Navbar() {
                 {profileOpen && (
                   <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-2xl border border-slate-100 py-2 z-50 animate-fade-in">
                     <div className="px-4 py-3 border-b border-slate-100 flex items-center gap-3">
-                      <img
+                      <Avatar
                         src={user.avatar}
-                        alt={user.name}
-                        className="w-10 h-10 rounded-xl object-cover border border-slate-200"
+                        name={user.name}
+                        className="w-10 h-10 rounded-xl"
+                        textClassName="text-xs"
                       />
                       <div className="min-w-0 flex-1">
                         <p className="text-sm font-bold text-slate-900 truncate">{user.name}</p>

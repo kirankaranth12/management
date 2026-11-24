@@ -41,24 +41,13 @@ export default function AuthPage({ initialMode = 'register' }) {
   const [regDepartment, setRegDepartment] = useState('Computer Science & Engineering');
   const [regPhone, setRegPhone] = useState('');
   const [regAvatar, setRegAvatar] = useState('');
-  const [avatarPreview, setAvatarPreview] = useState('https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80');
+  const [avatarPreview, setAvatarPreview] = useState('');
   const [showRegPassword, setShowRegPassword] = useState(false);
 
   // Forgot password modal
   const [forgotModalOpen, setForgotModalOpen] = useState(false);
   const [forgotEmail, setForgotEmail] = useState('');
   const [forgotResult, setForgotResult] = useState(null);
-
-  // Preset Avatar Options for quick selection
-  const avatarPresets = [
-    { label: 'Student Female', url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80' },
-    { label: 'Student Male', url: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80' },
-    { label: 'Faculty Female', url: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80' },
-    { label: 'Faculty Male', url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80' },
-    { label: 'Administrator', url: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&auto=format&fit=crop&q=80' },
-    { label: 'Counsellor', url: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80' },
-    { label: 'Council Leader', url: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80' },
-  ];
 
   // Quick Demo Accounts
   const demoAccounts = [
@@ -260,36 +249,49 @@ export default function AuthPage({ initialMode = 'register' }) {
           {mode === 'register' ? (
             <form onSubmit={handleRegister} className="space-y-4">
               
-              {/* Photo Upload & Preview Section */}
-              <div className="p-4 rounded-2xl bg-blue-50/60 border border-blue-100/80">
+              {/* Real Device Photo Upload */}
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80">
                 <label className="block text-xs font-bold text-slate-800 mb-2">
-                  Profile Photo & Avatar
+                  Profile Photograph (Upload from Device)
                 </label>
                 
                 <div className="flex items-center gap-4">
-                  <div className="relative group shrink-0">
-                    <img
-                      src={avatarPreview}
-                      alt="Avatar Preview"
-                      className="w-16 h-16 rounded-2xl object-cover border-2 border-white shadow-md ring-2 ring-blue-500/20"
-                    />
-                    <label 
-                      htmlFor="photo-upload"
-                      className="absolute inset-0 bg-slate-900/40 rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity text-white text-[10px] font-bold"
-                    >
-                      <Camera className="w-5 h-5" />
-                    </label>
+                  <div className="relative shrink-0">
+                    {avatarPreview ? (
+                      <img
+                        src={avatarPreview}
+                        alt="Uploaded Preview"
+                        className="w-16 h-16 rounded-2xl object-cover border-2 border-white shadow-md ring-2 ring-blue-500/20"
+                      />
+                    ) : (
+                      <div className="w-16 h-16 rounded-2xl bg-slate-200 border-2 border-dashed border-slate-300 flex flex-col items-center justify-center text-slate-400">
+                        <Camera className="w-6 h-6" />
+                        <span className="text-[9px] font-bold mt-0.5">No Photo</span>
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <label
                         htmlFor="photo-upload"
-                        className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-colors"
+                        className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-xs transition-colors"
                       >
-                        <UploadCloud className="w-3.5 h-3.5" />
-                        Upload Device Photo
+                        <UploadCloud className="w-4 h-4" />
+                        {avatarPreview ? 'Change Photo' : 'Upload My Photo'}
                       </label>
+                      {avatarPreview && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setAvatarPreview('');
+                            setRegAvatar('');
+                          }}
+                          className="px-3 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold transition-colors"
+                        >
+                          Remove
+                        </button>
+                      )}
                       <input
                         id="photo-upload"
                         type="file"
@@ -299,29 +301,9 @@ export default function AuthPage({ initialMode = 'register' }) {
                       />
                     </div>
                     <p className="text-[11px] text-slate-500 mt-1">
-                      Or pick from sample avatars below:
+                      Upload your real photo from your computer or phone (JPG, PNG).
                     </p>
                   </div>
-                </div>
-
-                {/* Avatar Presets */}
-                <div className="mt-3 flex items-center gap-2 overflow-x-auto pb-1">
-                  {avatarPresets.map((preset, idx) => (
-                    <button
-                      type="button"
-                      key={idx}
-                      onClick={() => {
-                        setAvatarPreview(preset.url);
-                        setRegAvatar(preset.url);
-                      }}
-                      className={`relative shrink-0 rounded-xl overflow-hidden border-2 transition-all ${
-                        avatarPreview === preset.url ? 'border-blue-600 ring-2 ring-blue-500/30 scale-105' : 'border-transparent opacity-75 hover:opacity-100'
-                      }`}
-                      title={preset.label}
-                    >
-                      <img src={preset.url} alt={preset.label} className="w-9 h-9 object-cover" />
-                    </button>
-                  ))}
                 </div>
               </div>
 

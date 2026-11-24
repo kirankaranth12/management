@@ -15,6 +15,7 @@ import {
   Check
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import Avatar from '../components/Avatar';
 
 export default function StudentLeaderPage() {
   const { 
@@ -151,10 +152,11 @@ export default function StudentLeaderPage() {
             {studentCouncil.map((rep) => (
               <div key={rep.id} className="bg-white rounded-3xl border border-slate-200/80 p-5 shadow-xs flex flex-col justify-between">
                 <div>
-                  <img
-                    src={rep.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${rep.name}`}
-                    alt={rep.name}
-                    className="w-16 h-16 rounded-2xl object-cover ring-2 ring-indigo-500/20 shadow-xs mb-3"
+                  <Avatar
+                    src={rep.avatar}
+                    name={rep.name}
+                    className="w-16 h-16 mb-3"
+                    textClassName="text-base"
                   />
                   <h4 className="text-sm font-bold text-slate-900">{rep.name}</h4>
                   <p className="text-xs font-bold text-indigo-700 mt-0.5">{rep.role}</p>

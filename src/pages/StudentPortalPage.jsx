@@ -1,43 +1,45 @@
 import React, { useState } from 'react';
-import { 
-  GraduationCap, 
-  Calendar, 
-  BookOpen, 
-  Clock, 
-  AlertCircle, 
-  CheckCircle2, 
-  Search, 
-  UploadCloud, 
-  Camera, 
-  MessageSquare, 
-  HelpCircle, 
-  Star, 
-  Sparkles, 
-  FileText, 
-  UserCheck, 
+import {
+  GraduationCap,
+  Calendar,
+  BookOpen,
+  Clock,
+  AlertCircle,
+  CheckCircle2,
+  Search,
+  UploadCloud,
+  Camera,
+  MessageSquare,
+  HelpCircle,
+  Star,
+  Sparkles,
+  FileText,
+  UserCheck,
   Award,
   ChevronRight,
   Filter,
   Check,
   Eye,
   Info,
-  Download
+  Download,
+  Package
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import Avatar from '../components/Avatar';
 
 export default function StudentPortalPage() {
-  const { 
-    user, 
-    activeSubTab, 
-    complaints, 
-    submitComplaint, 
-    announcements, 
-    lostAndFound, 
-    reportLostFound, 
-    claimLostFoundItem, 
+  const {
+    user,
+    activeSubTab,
+    complaints,
+    submitComplaint,
+    announcements,
+    lostAndFound,
+    reportLostFound,
+    claimLostFoundItem,
     studentAcademics,
     submitSuggestion,
-    showToast 
+    showToast
   } = useApp();
 
   // Active sub-tab state
@@ -128,7 +130,7 @@ export default function StudentPortalPage() {
       locationFound: lnfLocation,
       status: lnfStatus,
       contact: lnfContact || user?.email,
-      image: lnfImage || 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&auto=format&fit=crop&q=80'
+      image: lnfImage || ''
     });
 
     setLnfModalOpen(false);
@@ -152,13 +154,13 @@ export default function StudentPortalPage() {
 
   // Filter complaints for the logged-in student (strictly isolated to their account)
   const myComplaints = complaints.filter(c => {
-    const matchesUser = user?.role === 'Student' 
-      ? (c.studentId === user?.id || (user?.email && c.studentEmail === user?.email)) 
+    const matchesUser = user?.role === 'Student'
+      ? (c.studentId === user?.id || (user?.email && c.studentEmail === user?.email))
       : true;
     const matchesStatus = trackerFilter === 'All' || c.status === trackerFilter;
-    const matchesSearch = c.title.toLowerCase().includes(trackerSearch.toLowerCase()) || 
-                          c.location.toLowerCase().includes(trackerSearch.toLowerCase()) ||
-                          c.id.toLowerCase().includes(trackerSearch.toLowerCase());
+    const matchesSearch = c.title.toLowerCase().includes(trackerSearch.toLowerCase()) ||
+      c.location.toLowerCase().includes(trackerSearch.toLowerCase()) ||
+      c.id.toLowerCase().includes(trackerSearch.toLowerCase());
     return matchesUser && matchesStatus && matchesSearch;
   });
 
@@ -182,7 +184,7 @@ export default function StudentPortalPage() {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      
+
       {/* Portal Header */}
       <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
@@ -228,21 +230,19 @@ export default function StudentPortalPage() {
             <button
               key={tab.id}
               onClick={() => setSubTab(tab.id)}
-              className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-bold shrink-0 transition-all ${
-                isActive
-                  ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
-                  : tab.highlight
+              className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-bold shrink-0 transition-all ${isActive
+                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
+                : tab.highlight
                   ? 'bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200'
                   : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200/80'
-              }`}
+                }`}
             >
               <Icon className="w-4 h-4" />
               <span>{tab.label}</span>
               {tab.badge !== undefined && (
                 <span
-                  className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
-                    isActive ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'
-                  }`}
+                  className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${isActive ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'
+                    }`}
                 >
                   {tab.badge}
                 </span>
@@ -255,15 +255,16 @@ export default function StudentPortalPage() {
       {/* ===================== SUBTAB 1: OVERVIEW & PROFILE ===================== */}
       {subTab === 'overview' && (
         <div className="space-y-6">
-          
+
           {/* Student Profile Card */}
           <div className="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-xs">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-slate-100">
               <div className="flex items-start sm:items-center gap-5">
-                <img
-                  src={user?.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"}
-                  alt={user?.name}
-                  className="w-20 h-20 rounded-2xl object-cover ring-4 ring-blue-500/20 shadow-md"
+                <Avatar
+                  src={user?.avatar}
+                  name={user?.name || 'Student Member'}
+                  className="w-20 h-20 rounded-2xl"
+                  textClassName="text-xl"
                 />
                 <div>
                   <div className="flex items-center gap-2">
@@ -432,9 +433,8 @@ export default function StudentPortalPage() {
 
                   <div className="w-full bg-slate-200 rounded-full h-2.5 mt-3 overflow-hidden">
                     <div
-                      className={`h-full rounded-full transition-all duration-500 ${
-                        c.attendance >= 85 ? 'bg-emerald-500' : (c.attendance >= 75 ? 'bg-blue-500' : 'bg-rose-500')
-                      }`}
+                      className={`h-full rounded-full transition-all duration-500 ${c.attendance >= 85 ? 'bg-emerald-500' : (c.attendance >= 75 ? 'bg-blue-500' : 'bg-rose-500')
+                        }`}
                       style={{ width: `${c.attendance}%` }}
                     />
                   </div>
@@ -490,15 +490,14 @@ export default function StudentPortalPage() {
                       <td className="p-3.5 font-medium">{c.credits}</td>
                       <td className="p-3.5 font-bold text-slate-800">{c.marks}</td>
                       <td className="p-3.5">
-                        <span className={`px-2.5 py-0.5 rounded-md font-extrabold text-xs ${
-                          c.grade === 'A+' || c.grade === 'A' 
-                            ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' 
-                            : c.grade === 'A-' || c.grade === 'B+' 
+                        <span className={`px-2.5 py-0.5 rounded-md font-extrabold text-xs ${c.grade === 'A+' || c.grade === 'A'
+                          ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                          : c.grade === 'A-' || c.grade === 'B+'
                             ? 'bg-blue-100 text-blue-800 border border-blue-200'
                             : c.grade === 'B' || c.grade === 'C'
-                            ? 'bg-amber-100 text-amber-800 border border-amber-200'
-                            : 'bg-rose-100 text-rose-800 border border-rose-200'
-                        }`}>
+                              ? 'bg-amber-100 text-amber-800 border border-amber-200'
+                              : 'bg-rose-100 text-rose-800 border border-rose-200'
+                          }`}>
                           {c.grade}
                         </span>
                       </td>
@@ -554,18 +553,17 @@ export default function StudentPortalPage() {
               <h3 className="text-base font-black text-slate-900">Weekly Lecture & Lab Schedule</h3>
               <p className="text-xs text-slate-500">Select day of the week to view class timings and hall allotments.</p>
             </div>
-            
+
             {/* Day Selector */}
             <div className="flex items-center gap-1.5 p-1 bg-slate-100 rounded-xl overflow-x-auto">
               {days.map((day) => (
                 <button
                   key={day}
                   onClick={() => setSelectedDay(day)}
-                  className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
-                    selectedDay === day
-                      ? 'bg-blue-600 text-white shadow-xs'
-                      : 'text-slate-600 hover:text-slate-900'
-                  }`}
+                  className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${selectedDay === day
+                    ? 'bg-blue-600 text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                    }`}
                 >
                   {day}
                 </button>
@@ -623,7 +621,7 @@ export default function StudentPortalPage() {
           </div>
 
           <form onSubmit={handleComplaintSubmit} className="space-y-4">
-            
+
             {/* Category Selector */}
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1.5">
@@ -714,7 +712,7 @@ export default function StudentPortalPage() {
               <label className="block text-xs font-bold text-slate-700 mb-2">
                 Upload Supporting Photo (Optional)
               </label>
-              
+
               <div className="flex items-center gap-4">
                 {compImagePreview ? (
                   <div className="relative group shrink-0">
@@ -778,7 +776,7 @@ export default function StudentPortalPage() {
       {/* ===================== SUBTAB 6: COMPLAINT TRACKING ===================== */}
       {subTab === 'complaints-tracker' && (
         <div className="space-y-6">
-          
+
           {/* Filter Bar */}
           <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-2">
@@ -788,9 +786,8 @@ export default function StudentPortalPage() {
                   <button
                     key={st}
                     onClick={() => setTrackerFilter(st)}
-                    className={`px-3 py-1 text-xs font-bold rounded-lg transition-all ${
-                      trackerFilter === st ? 'bg-white text-blue-700 shadow-xs' : 'text-slate-600 hover:text-slate-900'
-                    }`}
+                    className={`px-3 py-1 text-xs font-bold rounded-lg transition-all ${trackerFilter === st ? 'bg-white text-blue-700 shadow-xs' : 'text-slate-600 hover:text-slate-900'
+                      }`}
                   >
                     {st}
                   </button>
@@ -835,9 +832,8 @@ export default function StudentPortalPage() {
                         <span className="text-xs font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-lg">
                           {c.category}
                         </span>
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                          c.priority === 'High' || c.priority === 'Emergency' ? 'bg-rose-100 text-rose-800' : 'bg-slate-100 text-slate-700'
-                        }`}>
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${c.priority === 'High' || c.priority === 'Emergency' ? 'bg-rose-100 text-rose-800' : 'bg-slate-100 text-slate-700'
+                          }`}>
                           {c.priority} Priority
                         </span>
                         <span className="text-xs text-slate-400">
@@ -896,17 +892,15 @@ export default function StudentPortalPage() {
                     {/* Status Pill Badge */}
                     <div className="sm:text-right shrink-0">
                       <span
-                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold ${
-                          c.status === 'Resolved'
-                            ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
-                            : c.status === 'In Progress'
+                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold ${c.status === 'Resolved'
+                          ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                          : c.status === 'In Progress'
                             ? 'bg-amber-100 text-amber-800 border border-amber-200'
                             : 'bg-rose-100 text-rose-800 border border-rose-200'
-                        }`}
+                          }`}
                       >
-                        <span className={`w-2 h-2 rounded-full ${
-                          c.status === 'Resolved' ? 'bg-emerald-500' : (c.status === 'In Progress' ? 'bg-amber-500' : 'bg-rose-500')
-                        }`} />
+                        <span className={`w-2 h-2 rounded-full ${c.status === 'Resolved' ? 'bg-emerald-500' : (c.status === 'In Progress' ? 'bg-amber-500' : 'bg-rose-500')
+                          }`} />
                         {c.status}
                       </span>
                     </div>
@@ -924,7 +918,7 @@ export default function StudentPortalPage() {
           <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs">
             <h3 className="text-base font-black text-slate-900 mb-1">Official Student Notice Board</h3>
             <p className="text-xs text-slate-500 mb-4">Official notices published by examination branch and student council.</p>
-            
+
             <div className="space-y-4">
               {announcements.map((ann) => (
                 <div key={ann.id} className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80">
@@ -983,9 +977,8 @@ export default function StudentPortalPage() {
                     className="p-1 text-amber-400 hover:scale-125 transition-transform"
                   >
                     <Star
-                      className={`w-6 h-6 ${
-                        star <= feedbackRating ? 'fill-amber-400 text-amber-400' : 'text-slate-300'
-                      }`}
+                      className={`w-6 h-6 ${star <= feedbackRating ? 'fill-amber-400 text-amber-400' : 'text-slate-300'
+                        }`}
                     />
                   </button>
                 ))}
@@ -1037,15 +1030,21 @@ export default function StudentPortalPage() {
             {lostAndFound.map((item) => (
               <div key={item.id} className="bg-white rounded-3xl border border-slate-200/80 p-5 shadow-xs flex flex-col justify-between">
                 <div>
-                  <div className="relative mb-3 rounded-2xl overflow-hidden bg-slate-100 aspect-video">
-                    <img
-                      src={item.image || "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&auto=format&fit=crop&q=80"}
-                      alt={item.title}
-                      className="w-full h-full object-cover"
-                    />
-                    <span className={`absolute top-2.5 right-2.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
-                      item.status === 'Claimed' ? 'bg-slate-900/80 text-white' : 'bg-emerald-600 text-white'
-                    }`}>
+                  <div className="relative mb-3 rounded-2xl overflow-hidden bg-slate-100 aspect-video flex items-center justify-center">
+                    {item.image ? (
+                      <img
+                        src={item.image}
+                        alt={item.title}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex flex-col items-center justify-center text-slate-400">
+                        <Package className="w-8 h-8 mb-1 text-slate-300" />
+                        <span className="text-[10px] font-bold">No Photo</span>
+                      </div>
+                    )}
+                    <span className={`absolute top-2.5 right-2.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold ${item.status === 'Claimed' ? 'bg-slate-900/80 text-white' : 'bg-emerald-600 text-white'
+                      }`}>
                       {item.status}
                     </span>
                   </div>
@@ -1079,7 +1078,7 @@ export default function StudentPortalPage() {
             <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
               <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 animate-fade-in">
                 <h3 className="text-base font-black text-slate-900">Report Lost or Found Item</h3>
-                
+
                 <form onSubmit={handleLnfSubmit} className="mt-4 space-y-3">
                   <div>
                     <label className="block text-xs font-bold text-slate-700 mb-1">Item Title *</label>

@@ -17,6 +17,7 @@ import {
   Building
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import Avatar from '../components/Avatar';
 
 export default function HRDepartmentPage() {
   const {
@@ -218,10 +219,11 @@ export default function HRDepartmentPage() {
                 <div>
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3">
-                      <img
-                        src={emp.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${emp.name}`}
-                        alt={emp.name}
-                        className="w-14 h-14 rounded-2xl object-cover ring-2 ring-rose-500/20"
+                      <Avatar
+                        src={emp.avatar}
+                        name={emp.name}
+                        className="w-14 h-14 rounded-2xl"
+                        textClassName="text-sm"
                       />
                       <div>
                         <h4 className="text-sm font-bold text-slate-900">{emp.name}</h4>

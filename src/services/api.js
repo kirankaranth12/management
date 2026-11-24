@@ -62,7 +62,7 @@ function fallbackHandler(endpoint, options = {}) {
       role: body.role || 'Student',
       department: body.department || 'General',
       phone: body.phone || '+1 (555) 000-0000',
-      avatar: body.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(body.name)}`,
+      avatar: body.avatar || '',
       rollNo: body.rollNo || (body.role === 'Student' ? `CS24B${Math.floor(100 + Math.random() * 900)}` : undefined),
       employeeCode: body.employeeCode || (body.role !== 'Student' ? `EMP-${Date.now()}` : undefined),
       bio: body.bio || `Registered ${body.role}`,

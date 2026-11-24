@@ -13,7 +13,7 @@ export const initialData = {
       semester: "1st Semester",
       rollNo: "STU-001",
       phone: "+1 (555) 000-0001",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Student",
+      avatar: "",
       cgpa: "0.00",
       attendance: 0,
       bio: "Registered campus student.",
@@ -29,7 +29,7 @@ export const initialData = {
       designation: "Assistant Professor",
       employeeCode: "EMP-FAC-0001",
       phone: "+1 (555) 000-0002",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Faculty",
+      avatar: "",
       bio: "Academic instructor and course coordinator.",
       joinedDate: "Fall 2026"
     },
@@ -43,7 +43,7 @@ export const initialData = {
       designation: "Campus Administrator",
       employeeCode: "EMP-ADM-0001",
       phone: "+1 (555) 000-0003",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Admin",
+      avatar: "",
       bio: "Overseeing campus facilities and administrative coordination.",
       joinedDate: "Fall 2026"
     },
@@ -57,7 +57,7 @@ export const initialData = {
       designation: "Sanitation Lead",
       employeeCode: "EMP-CLN-0001",
       phone: "+1 (555) 000-0004",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Cleaning",
+      avatar: "",
       bio: "Managing campus hygiene and sanitation requests.",
       joinedDate: "Fall 2026"
     },
@@ -71,7 +71,7 @@ export const initialData = {
       designation: "HR Manager",
       employeeCode: "EMP-HR-0001",
       phone: "+1 (555) 000-0005",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=HR",
+      avatar: "",
       bio: "Employee records and staff leave administration.",
       joinedDate: "Fall 2026"
     },
@@ -85,7 +85,7 @@ export const initialData = {
       designation: "Student Counsellor",
       employeeCode: "EMP-CNS-0001",
       phone: "+1 (555) 000-0006",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Counsellor",
+      avatar: "",
       bio: "Confidential emotional and academic counselling.",
       joinedDate: "Fall 2026"
     },
@@ -99,7 +99,7 @@ export const initialData = {
       designation: "Council President",
       employeeCode: "STU-LDR-0001",
       phone: "+1 (555) 000-0007",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Leader",
+      avatar: "",
       bio: "Representing student interests and coordinating activities.",
       joinedDate: "Fall 2026"
     }
