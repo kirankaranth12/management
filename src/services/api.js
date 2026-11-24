@@ -66,8 +66,8 @@ function fallbackHandler(endpoint, options = {}) {
       rollNo: body.rollNo || (body.role === 'Student' ? `CS24B${Math.floor(100 + Math.random() * 900)}` : undefined),
       employeeCode: body.employeeCode || (body.role !== 'Student' ? `EMP-${Date.now()}` : undefined),
       bio: body.bio || `Registered ${body.role}`,
-      cgpa: body.role === 'Student' ? '3.80' : undefined,
-      attendance: body.role === 'Student' ? 92.0 : undefined,
+      cgpa: body.role === 'Student' ? '0.00' : undefined,
+      attendance: body.role === 'Student' ? 0 : undefined,
       semester: body.role === 'Student' ? '1st Semester' : undefined,
       joinedDate: 'November 2026'
     };
@@ -240,17 +240,18 @@ function fallbackHandler(endpoint, options = {}) {
     return {
       success: true,
       stats: {
-        totalStudents: 2450 + db.users.filter(u => u.role === 'Student').length,
-        totalFaculty: 185 + db.users.filter(u => u.role === 'Faculty').length,
-        totalStaff: 64,
+        totalStudents: db.users.filter(u => u.role === 'Student').length,
+        totalFaculty: db.users.filter(u => u.role === 'Faculty').length,
+        totalStaff: db.users.filter(u => !['Student', 'Faculty'].includes(u.role)).length,
         totalComplaints: db.complaints.length,
         resolvedComplaints: db.complaints.filter(c => c.status === 'Resolved').length,
         pendingComplaints: db.complaints.filter(c => c.status === 'Pending').length,
         inProgressComplaints: db.complaints.filter(c => c.status === 'In Progress').length,
-        resolutionRate: db.complaints.length > 0 ? Math.round((db.complaints.filter(c => c.status === 'Resolved').length / db.complaints.length) * 100) : 100,
+        resolutionRate: db.complaints.length > 0 ? Math.round((db.complaints.filter(c => c.status === 'Resolved').length / db.complaints.length) * 100) : 0,
         cleaningTasksTotal: db.cleaningTasks.length,
         cleaningCompleted: db.cleaningTasks.filter(t => t.status === 'Completed').length,
-        departmentsCount: db.departments.length
+        sanitationScore: db.cleaningTasks.length > 0 ? Math.round((db.cleaningTasks.filter(t => t.status === 'Completed').length / db.cleaningTasks.length) * 100) : 0,
+        departmentsCount: (db.departments || []).length
       }
     };
   }
@@ -323,7 +324,7 @@ function fallbackHandler(endpoint, options = {}) {
       id: `CNS-APP-${String(db.counsellingAppointments.length + 1).padStart(2, '0')}`,
       studentId: body.studentId || 'STU-2024-001',
       studentName: body.studentName || 'Student',
-      counsellorName: 'Dr. Maya Patel',
+      counsellorName: 'Campus Counsellor',
       category: body.category || 'Academic Stress',
       date: body.date,
       timeSlot: body.timeSlot,

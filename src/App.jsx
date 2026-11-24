@@ -1,4 +1,5 @@
 import React from 'react';
+import { ShieldAlert } from 'lucide-react';
 import { useApp } from './context/AppContext';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
@@ -17,6 +18,30 @@ import NotificationsPage from './pages/NotificationsPage';
 import ProfilePage from './pages/ProfilePage';
 import AuthPage from './pages/AuthPage';
 
+function RestrictedAccess({ departmentName, allowedRole, onReturn }) {
+  return (
+    <div className="bg-white p-8 sm:p-12 rounded-3xl border border-slate-200/80 shadow-xs text-center max-w-lg mx-auto my-8 space-y-4">
+      <div className="w-16 h-16 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center mx-auto">
+        <ShieldAlert className="w-8 h-8" />
+      </div>
+      <div>
+        <h3 className="text-lg font-black text-slate-900 tracking-tight">Access Restricted</h3>
+        <p className="text-xs text-slate-500 mt-1.5 leading-relaxed">
+          The <strong>{departmentName}</strong> is restricted to authorized <strong>{allowedRole}</strong> personnel. Your current account does not have authorization to access internal operations for this department.
+        </p>
+      </div>
+      <div className="pt-2">
+        <button
+          onClick={onReturn}
+          className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-blue-500/20"
+        >
+          Return to My Workspace
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function DashboardContent() {
   const { user, activeTab, navigate } = useApp();
 
@@ -25,23 +50,42 @@ function DashboardContent() {
     return <AuthPage initialMode="register" />;
   }
 
-  // Active page router
+  const role = user?.role || 'Guest';
+  const isAdmin = role === 'Admin';
+  const myWorkspace = role === 'Faculty' ? 'faculty-portal' : (role === 'Student' ? 'student-portal' : (role === 'Cleaning' ? 'cleaning' : (role === 'HR' ? 'hr' : 'home')));
+
+  // Active page router with Role-Based Access Control
   switch (activeTab) {
     case 'home':
       return <HomePage />;
     case 'student-portal':
+      if (!isAdmin && role !== 'Student') {
+        return <RestrictedAccess departmentName="Student Portal" allowedRole="Enrolled Students" onReturn={() => navigate(myWorkspace)} />;
+      }
       return <StudentPortalPage />;
     case 'cleaning':
+      if (!isAdmin && role !== 'Cleaning') {
+        return <RestrictedAccess departmentName="Cleaning Department" allowedRole="Sanitation Staff" onReturn={() => navigate(myWorkspace)} />;
+      }
       return <CleaningDepartmentPage />;
     case 'management':
+      if (!isAdmin) {
+        return <RestrictedAccess departmentName="Management Department" allowedRole="Executive Management & Administrators" onReturn={() => navigate(myWorkspace)} />;
+      }
       return <ManagementDepartmentPage />;
     case 'hr':
+      if (!isAdmin && role !== 'HR') {
+        return <RestrictedAccess departmentName="HR Department" allowedRole="Human Resources Officers" onReturn={() => navigate(myWorkspace)} />;
+      }
       return <HRDepartmentPage />;
     case 'counselling':
       return <StudentCounsellingPage />;
     case 'student-leader':
       return <StudentLeaderPage />;
     case 'faculty-portal':
+      if (!isAdmin && role !== 'Faculty') {
+        return <RestrictedAccess departmentName="Faculty Portal" allowedRole="Faculty & Instructors" onReturn={() => navigate(myWorkspace)} />;
+      }
       return <FacultyPortalPage />;
     case 'notifications':
       return <NotificationsPage />;

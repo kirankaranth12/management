@@ -101,8 +101,8 @@ app.post('/api/auth/register', (req, res) => {
     rollNo: rollNo || (role === 'Student' ? `CS24B${Math.floor(100 + Math.random() * 900)}` : undefined),
     employeeCode: employeeCode || (role !== 'Student' ? `EMP-${generatedId}` : undefined),
     bio: bio || `Registered ${role} in ${department || 'College'}.`,
-    cgpa: role === 'Student' ? '3.80' : undefined,
-    attendance: role === 'Student' ? 92.0 : undefined,
+    cgpa: role === 'Student' ? '0.00' : undefined,
+    attendance: role === 'Student' ? 0 : undefined,
     semester: role === 'Student' ? '1st Semester' : undefined,
     joinedDate: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
   };
@@ -550,16 +550,17 @@ app.get('/api/management/stats', (req, res) => {
   res.json({
     success: true,
     stats: {
-      totalStudents: totalStudents + 2450, // realistic college base + live count
-      totalFaculty: totalFaculty + 185,
-      totalStaff: totalStaff + 64,
+      totalStudents,
+      totalFaculty,
+      totalStaff,
       totalComplaints,
       resolvedComplaints,
       pendingComplaints,
       inProgressComplaints,
-      resolutionRate: totalComplaints > 0 ? Math.round((resolvedComplaints / totalComplaints) * 100) : 100,
+      resolutionRate: totalComplaints > 0 ? Math.round((resolvedComplaints / totalComplaints) * 100) : 0,
       cleaningTasksTotal: totalCleaningTasks,
       cleaningCompleted: completedCleaningTasks,
+      sanitationScore: totalCleaningTasks > 0 ? Math.round((completedCleaningTasks / totalCleaningTasks) * 100) : 0,
       departmentsCount: db.data.departments.length
     }
   });
@@ -657,7 +658,7 @@ app.delete('/api/announcements/:id', (req, res) => {
 
 // Employees
 app.get('/api/hr/employees', (req, res) => {
-  res.json({ success: true, employees: db.data.hrEmployees });
+  res.json({ success: true, employees: db.data.hrEmployees || [] });
 });
 
 app.post('/api/hr/employees', (req, res) => {
@@ -735,7 +736,7 @@ app.post('/api/hr/leaves', (req, res) => {
 // Approve / Reject Leave
 app.put('/api/hr/leaves/:id', (req, res) => {
   const { id } = req.params;
-  const { status, reviewerComments, reviewedBy = 'Priya Sharma (HR)' } = req.body;
+  const { status, reviewerComments, reviewedBy = 'HR Officer' } = req.body;
 
   const leave = db.data.leaveRequests.find(l => l.id === id);
   if (!leave) {
@@ -807,7 +808,7 @@ app.post('/api/counselling/appointments', (req, res) => {
     id: `CNS-APP-${String(db.data.counsellingAppointments.length + 1).padStart(2, '0')}`,
     studentId,
     studentName: studentName || 'Student',
-    counsellorName: 'Dr. Maya Patel',
+    counsellorName: 'Campus Counsellor',
     category,
     date,
     timeSlot,

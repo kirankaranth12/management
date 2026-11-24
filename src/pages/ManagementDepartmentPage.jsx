@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import { 
-  Building2, 
-  Activity, 
-  Users, 
-  ShieldCheck, 
-  TrendingUp, 
-  Megaphone, 
-  CheckCircle2, 
-  Clock, 
-  AlertCircle, 
-  Plus, 
-  Search, 
-  Check, 
+import {
+  Building2,
+  Activity,
+  Users,
+  ShieldCheck,
+  TrendingUp,
+  Megaphone,
+  CheckCircle2,
+  Clock,
+  AlertCircle,
+  Plus,
+  Search,
+  Check,
   BarChart3,
   DollarSign,
   GraduationCap
@@ -19,16 +19,16 @@ import {
 import { useApp } from '../context/AppContext';
 
 export default function ManagementDepartmentPage() {
-  const { 
-    managementStats, 
-    departments, 
-    complaints, 
-    updateComplaintStatus, 
-    announcements, 
-    publishAnnouncement, 
+  const {
+    managementStats,
+    departments,
+    complaints,
+    updateComplaintStatus,
+    announcements,
+    publishAnnouncement,
     cleaningTasks,
     user,
-    showToast 
+    showToast
   } = useApp();
 
   const [activeTab, setActiveTab] = useState('operations'); // 'operations' | 'departments' | 'complaints' | 'announcements' | 'performance'
@@ -79,23 +79,23 @@ export default function ManagementDepartmentPage() {
     const matchesDept = complaintDeptFilter === 'All' || c.department.includes(complaintDeptFilter);
     const matchesStatus = complaintStatusFilter === 'All' || c.status === complaintStatusFilter;
     const matchesSearch = c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          c.studentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          c.id.toLowerCase().includes(searchQuery.toLowerCase());
+      c.studentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      c.id.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesDept && matchesStatus && matchesSearch;
   });
 
   const stats = managementStats || {
-    totalStudents: 2450,
-    totalFaculty: 185,
-    totalStaff: 64,
+    totalStudents: 0,
+    totalFaculty: 0,
+    totalStaff: 0,
     totalComplaints: complaints.length,
     resolvedComplaints: complaints.filter(c => c.status === 'Resolved').length,
-    resolutionRate: 94
+    resolutionRate: complaints.length > 0 ? Math.round((complaints.filter(c => c.status === 'Resolved').length / complaints.length) * 100) : 0
   };
 
   return (
     <div className="space-y-6 animate-fade-in">
-      
+
       {/* Top Banner */}
       <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
@@ -136,23 +136,27 @@ export default function ManagementDepartmentPage() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
           <span className="text-xs font-bold text-slate-500 uppercase">Enrolled Students</span>
-          <p className="text-2xl font-black text-slate-900 mt-1">{stats.totalStudents}</p>
-          <p className="text-[11px] text-slate-400 mt-0.5">Across 7 departments</p>
+          <p className="text-2xl font-black text-slate-900 mt-1">{stats.totalStudents || 0}</p>
+          <p className="text-[11px] text-slate-400 mt-0.5">Across {departments.length} departments</p>
         </div>
         <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
           <span className="text-xs font-bold text-slate-500 uppercase">Faculty & Staff</span>
-          <p className="text-2xl font-black text-slate-900 mt-1">{stats.totalFaculty + stats.totalStaff}</p>
-          <p className="text-[11px] text-slate-400 mt-0.5">{stats.totalFaculty} Faculty • {stats.totalStaff} Staff</p>
+          <p className="text-2xl font-black text-slate-900 mt-1">{(stats.totalFaculty || 0) + (stats.totalStaff || 0)}</p>
+          <p className="text-[11px] text-slate-400 mt-0.5">{stats.totalFaculty || 0} Faculty • {stats.totalStaff || 0} Staff</p>
         </div>
         <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
           <span className="text-xs font-bold text-purple-700 uppercase">Resolution Efficiency</span>
-          <p className="text-2xl font-black text-purple-700 mt-1">{stats.resolutionRate}%</p>
-          <p className="text-[11px] text-emerald-600 font-semibold mt-0.5">Avg turnaround 1.8 days</p>
+          <p className="text-2xl font-black text-purple-700 mt-1">{stats.resolutionRate || 0}%</p>
+          <p className="text-[11px] text-emerald-600 font-semibold mt-0.5">
+            {stats.resolvedComplaints || 0} of {stats.totalComplaints || complaints.length} resolved
+          </p>
         </div>
         <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
           <span className="text-xs font-bold text-slate-500 uppercase">Sanitation Score</span>
-          <p className="text-2xl font-black text-emerald-600 mt-1">98.2%</p>
-          <p className="text-[11px] text-slate-400 mt-0.5">4 sanitation crews on duty</p>
+          <p className="text-2xl font-black text-emerald-600 mt-1">
+            {cleaningTasks.length > 0 ? `${Math.round((cleaningTasks.filter(t => t.status === 'Completed').length / cleaningTasks.length) * 100)}%` : '0%'}
+          </p>
+          <p className="text-[11px] text-slate-400 mt-0.5">{cleaningTasks.filter(t => t.status !== 'Completed').length} tasks pending</p>
         </div>
       </div>
 
@@ -168,9 +172,8 @@ export default function ManagementDepartmentPage() {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`px-4 py-2 text-xs font-bold rounded-xl transition-all ${
-              activeTab === tab.id ? 'bg-white text-purple-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
-            }`}
+            className={`px-4 py-2 text-xs font-bold rounded-xl transition-all ${activeTab === tab.id ? 'bg-white text-purple-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
+              }`}
           >
             {tab.label}
           </button>
@@ -181,7 +184,7 @@ export default function ManagementDepartmentPage() {
       {activeTab === 'operations' && (
         <div className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            
+
             {/* Left: Department Operations Table */}
             <div className="lg:col-span-8 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs">
               <div className="flex items-center justify-between mb-4">
@@ -222,21 +225,23 @@ export default function ManagementDepartmentPage() {
             {/* Right: Quick Operational Checklist */}
             <div className="lg:col-span-4 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
               <h3 className="text-sm font-extrabold text-slate-900">Administrative Priority Queue</h3>
-              
-              <div className="space-y-3">
-                <div className="p-3 rounded-2xl bg-amber-50/70 border border-amber-200 text-xs">
-                  <span className="font-bold text-amber-900 block">Sanitation Inspection</span>
-                  <p className="text-amber-800 text-[11px] mt-0.5">Science Block washroom maintenance in progress.</p>
+
+              {complaints.filter(c => c.priority === 'High' && c.status !== 'Resolved').length === 0 ? (
+                <div className="p-6 text-center rounded-2xl bg-slate-50 border border-slate-200/80">
+                  <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto mb-1.5" />
+                  <p className="text-xs font-bold text-slate-700">All Priority Tasks Cleared</p>
+                  <p className="text-[11px] text-slate-400 mt-0.5">No urgent administrative issues currently pending.</p>
                 </div>
-                <div className="p-3 rounded-2xl bg-blue-50/70 border border-blue-200 text-xs">
-                  <span className="font-bold text-blue-900 block">Mid-Term Exam Datesheet</span>
-                  <p className="text-blue-800 text-[11px] mt-0.5">Published to student and faculty portals.</p>
+              ) : (
+                <div className="space-y-3">
+                  {complaints.filter(c => c.priority === 'High' && c.status !== 'Resolved').slice(0, 5).map(c => (
+                    <div key={c.id} className="p-3 rounded-2xl bg-amber-50/70 border border-amber-200 text-xs">
+                      <span className="font-bold text-amber-900 block">{c.title}</span>
+                      <p className="text-amber-800 text-[11px] mt-0.5">{c.department} • {c.location}</p>
+                    </div>
+                  ))}
                 </div>
-                <div className="p-3 rounded-2xl bg-emerald-50/70 border border-emerald-200 text-xs">
-                  <span className="font-bold text-emerald-900 block">Campus Wi-Fi Maintenance</span>
-                  <p className="text-emerald-800 text-[11px] mt-0.5">Core switch upgrade completed successfully.</p>
-                </div>
-              </div>
+              )}
             </div>
 
           </div>
@@ -280,7 +285,7 @@ export default function ManagementDepartmentPage() {
       {/* ===================== TAB 3: MONITOR ALL COLLEGE COMPLAINTS ===================== */}
       {activeTab === 'complaints' && (
         <div className="space-y-4">
-          
+
           {/* Filter Bar */}
           <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
             <div className="flex flex-wrap items-center gap-2">
@@ -345,54 +350,53 @@ export default function ManagementDepartmentPage() {
                     </tr>
                   ) : (
                     filteredComplaints.map((c) => (
-                    <tr key={c.id} className="hover:bg-slate-50/70 transition-colors">
-                      <td className="p-3.5">
-                        <span className="font-mono font-bold text-blue-700 bg-blue-100 px-1.5 py-0.5 rounded">
-                          {c.id}
-                        </span>
-                        <span className="block text-[11px] text-slate-500 mt-1">{c.category}</span>
-                      </td>
-                      <td className="p-3.5">
-                        <strong className="text-slate-900 block">{c.title}</strong>
-                        <span className="text-[11px] text-slate-500">📍 {c.location}</span>
-                      </td>
-                      <td className="p-3.5">
-                        <strong className="text-slate-800">{c.studentName}</strong>
-                        <span className="block text-[10px] text-slate-400">{c.studentId}</span>
-                      </td>
-                      <td className="p-3.5">
-                        <span className="font-semibold text-purple-900">{c.department}</span>
-                        <span className="block text-[10px] text-slate-500">{c.assignedTo}</span>
-                      </td>
-                      <td className="p-3.5">
-                        <span className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${
-                          c.status === 'Resolved' ? 'bg-emerald-100 text-emerald-800' : (c.status === 'In Progress' ? 'bg-blue-100 text-blue-800' : 'bg-rose-100 text-rose-800')
-                        }`}>
-                          {c.status}
-                        </span>
-                      </td>
-                      <td className="p-3.5">
-                        <div className="flex items-center gap-1.5">
-                          {c.status !== 'Resolved' && (
-                            <button
-                              onClick={() => updateComplaintStatus(c.id, 'Resolved', 'Resolved by College Management Office', 'Dean Vance')}
-                              className="px-2.5 py-1 text-[11px] font-bold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg shadow-xs"
-                            >
-                              Resolve
-                            </button>
-                          )}
-                          {c.status === 'Pending' && (
-                            <button
-                              onClick={() => updateComplaintStatus(c.id, 'In Progress', 'Assigned by Dean Vance for immediate action')}
-                              className="px-2.5 py-1 text-[11px] font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-xs"
-                            >
-                              Escalate
-                            </button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  )))}
+                      <tr key={c.id} className="hover:bg-slate-50/70 transition-colors">
+                        <td className="p-3.5">
+                          <span className="font-mono font-bold text-blue-700 bg-blue-100 px-1.5 py-0.5 rounded">
+                            {c.id}
+                          </span>
+                          <span className="block text-[11px] text-slate-500 mt-1">{c.category}</span>
+                        </td>
+                        <td className="p-3.5">
+                          <strong className="text-slate-900 block">{c.title}</strong>
+                          <span className="text-[11px] text-slate-500">📍 {c.location}</span>
+                        </td>
+                        <td className="p-3.5">
+                          <strong className="text-slate-800">{c.studentName}</strong>
+                          <span className="block text-[10px] text-slate-400">{c.studentId}</span>
+                        </td>
+                        <td className="p-3.5">
+                          <span className="font-semibold text-purple-900">{c.department}</span>
+                          <span className="block text-[10px] text-slate-500">{c.assignedTo}</span>
+                        </td>
+                        <td className="p-3.5">
+                          <span className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${c.status === 'Resolved' ? 'bg-emerald-100 text-emerald-800' : (c.status === 'In Progress' ? 'bg-blue-100 text-blue-800' : 'bg-rose-100 text-rose-800')
+                            }`}>
+                            {c.status}
+                          </span>
+                        </td>
+                        <td className="p-3.5">
+                          <div className="flex items-center gap-1.5">
+                            {c.status !== 'Resolved' && (
+                              <button
+                                onClick={() => updateComplaintStatus(c.id, 'Resolved', 'Resolved by College Management Office', user?.name || 'Administration')}
+                                className="px-2.5 py-1 text-[11px] font-bold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg shadow-xs"
+                              >
+                                Resolve
+                              </button>
+                            )}
+                            {c.status === 'Pending' && (
+                              <button
+                                onClick={() => updateComplaintStatus(c.id, 'In Progress', 'Assigned by Management for immediate action', user?.name || 'Administration')}
+                                className="px-2.5 py-1 text-[11px] font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-xs"
+                              >
+                                Escalate
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    )))}
                 </tbody>
               </table>
             </div>
@@ -403,7 +407,7 @@ export default function ManagementDepartmentPage() {
       {/* ===================== TAB 4: BROADCAST ANNOUNCEMENTS ===================== */}
       {activeTab === 'announcements' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          
+
           {/* Create Announcement Form */}
           <div className="lg:col-span-6 bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-xs">
             <h3 className="text-base font-black text-slate-900 mb-1">Create College-Wide Announcement</h3>
@@ -501,7 +505,7 @@ export default function ManagementDepartmentPage() {
       {activeTab === 'performance' && (
         <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-6">
           <h3 className="text-base font-black text-slate-900">Department Performance & Resolution Scores</h3>
-          
+
           <div className="space-y-4">
             {departments.map((dept) => (
               <div key={dept.id} className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80">

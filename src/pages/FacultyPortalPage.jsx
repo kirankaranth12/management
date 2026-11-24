@@ -100,24 +100,7 @@ export default function FacultyPortalPage() {
   };
 
   // ==================== ASSIGNMENT EVALUATION MODAL ====================
-  const [assignments, setAssignments] = useState([
-    {
-      id: 'ASN-01',
-      title: 'Lab Exercise 4: Distributed Paxos Consensus Simulator',
-      course: 'CS-304: Distributed Database Systems',
-      dueDate: '2026-11-28',
-      maxMarks: 50,
-      submissions: '42 / 45'
-    },
-    {
-      id: 'ASN-02',
-      title: 'Term Paper: Microservices Fault Tolerance with Kubernetes',
-      course: 'CS-308: Cloud Architecture & DevOps',
-      dueDate: '2026-12-05',
-      maxMarks: 100,
-      submissions: '18 / 40'
-    }
-  ]);
+  const [assignments, setAssignments] = useState([]);
   const [asnTitle, setAsnTitle] = useState('');
   const [asnCourse, setAsnCourse] = useState('CS-301: Advanced Data Structures');
   const [asnDue, setAsnDue] = useState('2026-12-02');
@@ -126,17 +109,17 @@ export default function FacultyPortalPage() {
   // Evaluate single submission modal
   const [evalModalOpen, setEvalModalOpen] = useState(false);
   const [selectedAsn, setSelectedAsn] = useState(null);
-  const [evalStudent, setEvalStudent] = useState('Alex Rivera (STU-2024-001)');
-  const [evalMarks, setEvalMarks] = useState('48');
-  const [evalFeedback, setEvalFeedback] = useState('Excellent implementation of Paxos consensus protocol with clean error recovery.');
+  const [evalStudent, setEvalStudent] = useState('');
+  const [evalMarks, setEvalMarks] = useState('0');
+  const [evalFeedback, setEvalFeedback] = useState('');
 
   const handleGradeSubmission = async (e) => {
     e.preventDefault();
     if (!evalMarks || !selectedAsn) return;
     await gradeAssignment(
       selectedAsn.id,
-      'STU-2024-001',
-      'Alex Rivera',
+      evalStudent ? evalStudent.split('(')[1]?.replace(')', '') || 'STU-001' : 'STU-001',
+      evalStudent ? evalStudent.split('(')[0]?.trim() || 'Student Member' : 'Student Member',
       evalMarks,
       selectedAsn.maxMarks,
       evalFeedback
@@ -509,10 +492,9 @@ export default function FacultyPortalPage() {
                       onChange={(e) => setEvalStudent(e.target.value)}
                       className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl font-bold"
                     >
-                      <option value="Alex Rivera (STU-2024-001)">Alex Rivera (STU-2024-001)</option>
-                      <option value="Emily Chen (STU-2024-002)">Emily Chen (STU-2024-002)</option>
-                      <option value="David Kim (STU-2024-003)">David Kim (STU-2024-003)</option>
-                      <option value="Sophia Taylor (STU-2024-004)">Sophia Taylor (STU-2024-004)</option>
+                      {roster.map(s => (
+                        <option key={s.id} value={`${s.name} (${s.id})`}>{s.name} ({s.id})</option>
+                      ))}
                     </select>
                   </div>
 
@@ -687,7 +669,7 @@ export default function FacultyPortalPage() {
 
                     {c.status !== 'Resolved' && (
                       <button
-                        onClick={() => updateComplaintStatus(c.id, 'Resolved', 'Projector HDMI port tested and fixed with Campus IT team.', 'Dr. Sarah Jenkins')}
+                        onClick={() => updateComplaintStatus(c.id, 'Resolved', 'Facility issue inspected and resolved.', user?.name || 'Faculty Member')}
                         className="px-3 py-1.5 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg shadow-xs flex items-center gap-1 mt-2"
                       >
                         <Check className="w-3.5 h-3.5" />
@@ -730,20 +712,20 @@ export default function FacultyPortalPage() {
         <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs max-w-2xl mx-auto space-y-4">
           <div className="flex items-center gap-4 pb-4 border-b border-slate-100">
             <img
-              src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80"
+              src={user?.avatar || "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80"}
               alt="Faculty Avatar"
               className="w-20 h-20 rounded-2xl object-cover ring-2 ring-emerald-500/20"
             />
             <div>
-              <h3 className="text-lg font-black text-slate-900">Dr. Sarah Jenkins</h3>
-              <p className="text-xs font-bold text-emerald-700">Associate Professor & HOD, Computer Science</p>
-              <p className="text-xs text-slate-500 mt-1">Ph.D. in Computer Science (MIT) • 12+ Years Teaching</p>
+              <h3 className="text-lg font-black text-slate-900">{user?.name || 'Faculty Member'}</h3>
+              <p className="text-xs font-bold text-emerald-700">{user?.designation || 'Assistant Professor'}, {user?.department || 'Computer Science'}</p>
+              <p className="text-xs text-slate-500 mt-1">{user?.bio || 'Academic Instructor & Faculty Member'}</p>
             </div>
           </div>
 
           <div className="text-xs space-y-2 text-slate-700">
-            <p>📧 Official Email: sarah.jenkins@campusconnect.edu</p>
-            <p>🏢 Office Cabin: Academic Complex, Cabin 14 (3rd Floor)</p>
+            <p>📧 Official Email: {user?.email || 'faculty@campusconnect.edu'}</p>
+            <p>🏢 Office Cabin: Academic Complex, Cabin 14</p>
             <p>🕒 Student Office Hours: Mon & Fri, 02:00 PM - 04:00 PM</p>
           </div>
         </div>

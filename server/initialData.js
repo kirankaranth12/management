@@ -110,6 +110,7 @@ export const initialData = {
   cleaningTasks: [],
   announcements: [],
   notifications: [],
+  hrEmployees: [],
   hrStaff: [],
   leaveRequests: [],
   counsellingAppointments: [],
@@ -134,11 +135,12 @@ export const initialData = {
   managementStats: {
     totalStudents: 0,
     totalFaculty: 0,
+    totalStaff: 0,
     totalDepartments: 7,
     openComplaints: 0,
     resolvedComplaints: 0,
     pendingLeaves: 0,
-    campusHygieneScore: 100,
+    campusHygieneScore: 0,
     budgetUtilized: "0%"
   },
 

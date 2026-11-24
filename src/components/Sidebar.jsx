@@ -13,7 +13,8 @@ import {
   LogOut,
   ChevronRight,
   ShieldCheck,
-  CheckCircle2
+  CheckCircle2,
+  Lock
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
@@ -225,6 +226,9 @@ export default function Sidebar() {
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
+            const userRole = user?.role || 'Guest';
+            const isAdmin = userRole === 'Admin';
+            const isRestricted = item.primaryRole && !isAdmin && userRole !== item.primaryRole;
             const isUserPrimary = user && user.role === item.primaryRole;
 
             return (
@@ -242,6 +246,8 @@ export default function Sidebar() {
                     ? 'bg-blue-600 text-white shadow-md shadow-blue-500/25 font-bold'
                     : item.isDanger
                     ? 'text-rose-600 hover:bg-rose-50/80 hover:text-rose-700'
+                    : isRestricted
+                    ? 'text-slate-400 hover:bg-slate-50 hover:text-slate-600'
                     : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900'
                 }`}
               >
@@ -261,7 +267,12 @@ export default function Sidebar() {
                 </div>
 
                 <div className="flex items-center gap-1.5 shrink-0 ml-1">
-                  {item.badge && (
+                  {isRestricted ? (
+                    <span className="flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-400 font-medium">
+                      <Lock className="w-2.5 h-2.5" />
+                      Locked
+                    </span>
+                  ) : item.badge ? (
                     <span
                       className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
                         isActive ? 'bg-white/25 text-white' : item.badgeColor
@@ -269,7 +280,7 @@ export default function Sidebar() {
                     >
                       {item.badge}
                     </span>
-                  )}
+                  ) : null}
                   {isUserPrimary && !isActive && (
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" title="Your Primary Module" />
                   )}

@@ -113,7 +113,7 @@ export default function AuthPage({ initialMode = 'register' }) {
       password: regPassword,
       role: regRole,
       department: regDepartment,
-      phone: regPhone.trim() || '+1 (555) 345-6789',
+      phone: regPhone.trim() || '+1 (555) 000-0000',
       avatar: regAvatar || avatarPreview
     });
     setIsSubmitting(false);
@@ -527,7 +527,7 @@ export default function AuthPage({ initialMode = 'register' }) {
                   <input
                     type="text"
                     required
-                    placeholder="e.g. STU-2024-001 or alex.rivera@campusconnect.edu"
+                    placeholder="e.g. STU-001 or student@campusconnect.edu"
                     value={loginId}
                     onChange={(e) => setLoginId(e.target.value)}
                     className="w-full pl-10 pr-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 font-medium"
@@ -625,7 +625,7 @@ export default function AuthPage({ initialMode = 'register' }) {
                 <input
                   type="text"
                   required
-                  placeholder="alex.rivera@campusconnect.edu"
+                  placeholder="student@campusconnect.edu"
                   value={forgotEmail}
                   onChange={(e) => setForgotEmail(e.target.value)}
                   className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-500/20"

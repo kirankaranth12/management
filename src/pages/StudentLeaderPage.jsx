@@ -180,7 +180,7 @@ export default function StudentLeaderPage() {
           <div className="lg:col-span-5 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs h-fit">
             <h3 className="text-base font-black text-slate-900 mb-1">Submit Idea / Suggestion</h3>
             <p className="text-xs text-slate-500 mb-4">
-              Ideas that receive 50+ upvotes are formally submitted by the Student Council to Dean Vance.
+              Ideas that receive 50+ upvotes are formally submitted by the Student Council to College Administration.
             </p>
 
             <form onSubmit={handleSuggestionSubmit} className="space-y-3">
@@ -330,7 +330,7 @@ export default function StudentLeaderPage() {
             <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/80">
               <div className="flex items-center justify-between mb-1">
                 <span className="text-xs font-bold text-slate-800">Memorandum #2026-04: Library Study Zone 24/7 Access</span>
-                <span className="text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">Approved by Dean</span>
+                <span className="text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">Approved by Administration</span>
               </div>
               <p className="text-xs text-slate-600">
                 Resolution: 2nd floor quiet room approved for round-the-clock student access with biometric pass scan starting Dec 1st.

@@ -124,12 +124,14 @@ export default function HRDepartmentPage() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
           <span className="text-xs font-bold text-slate-500 uppercase">Total Faculty & Staff</span>
-          <p className="text-2xl font-black text-slate-900 mt-1">{hrEmployees.length + 180}</p>
+          <p className="text-2xl font-black text-slate-900 mt-1">{hrEmployees.length}</p>
           <p className="text-[11px] text-slate-400 mt-0.5">Across 7 departments</p>
         </div>
         <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
           <span className="text-xs font-bold text-emerald-700 uppercase">Present Today</span>
-          <p className="text-2xl font-black text-emerald-600 mt-1">96.4%</p>
+          <p className="text-2xl font-black text-emerald-600 mt-1">
+            {hrEmployees.length > 0 ? `${((hrEmployees.filter(e => e.status === 'Present').length / hrEmployees.length) * 100).toFixed(1)}%` : '0.0%'}
+          </p>
           <p className="text-[11px] text-slate-400 mt-0.5">Active on campus roster</p>
         </div>
         <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
@@ -139,7 +141,9 @@ export default function HRDepartmentPage() {
         </div>
         <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
           <span className="text-xs font-bold text-purple-700 uppercase">Appraisal Index</span>
-          <p className="text-2xl font-black text-purple-600 mt-1">4.8 / 5.0</p>
+          <p className="text-2xl font-black text-purple-600 mt-1">
+            {hrEmployees.length > 0 ? '4.8 / 5.0' : '0.0 / 5.0'}
+          </p>
           <p className="text-[11px] text-slate-400 mt-0.5">Faculty satisfaction score</p>
         </div>
       </div>
@@ -199,11 +203,18 @@ export default function HRDepartmentPage() {
 
           {/* Employee Profile Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {filteredEmployees.map((emp) => (
-              <div
-                key={emp.id}
-                className="bg-white rounded-3xl border border-slate-200/80 p-5 shadow-xs flex flex-col justify-between hover:border-rose-300 transition-all"
-              >
+            {filteredEmployees.length === 0 ? (
+              <div className="col-span-full bg-white p-12 text-center rounded-3xl border border-slate-200/80">
+                <Users className="w-12 h-12 text-slate-300 mx-auto mb-2" />
+                <h4 className="text-sm font-bold text-slate-700">No Staff or Faculty Records</h4>
+                <p className="text-xs text-slate-400 mt-1">Staff directory is currently empty. Registered staff and faculty will appear here.</p>
+              </div>
+            ) : (
+              filteredEmployees.map((emp) => (
+                <div
+                  key={emp.id}
+                  className="bg-white rounded-3xl border border-slate-200/80 p-5 shadow-xs flex flex-col justify-between hover:border-rose-300 transition-all"
+                >
                 <div>
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3">
@@ -242,7 +253,7 @@ export default function HRDepartmentPage() {
                   </span>
                 </div>
               </div>
-            ))}
+            )))}
           </div>
         </div>
       )}

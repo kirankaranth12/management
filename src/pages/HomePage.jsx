@@ -83,7 +83,7 @@ export default function HomePage() {
       icon: HeartHandshake,
       color: 'bg-teal-600',
       badge: 'Strictly Confidential',
-      stat: 'Dr. Maya Patel Available'
+      stat: 'Campus Counsellor On-Duty'
     },
     {
       id: 'student-leader',
@@ -205,8 +205,12 @@ export default function HomePage() {
             </div>
           </div>
           <div className="mt-3 flex items-baseline gap-2">
-            <span className="text-2xl font-black text-slate-900">98.2%</span>
-            <span className="text-[11px] font-semibold text-emerald-600">Optimal</span>
+            <span className="text-2xl font-black text-slate-900">
+              {cleaningTasks.length > 0 ? `${Math.round((cleaningTasks.filter(t => t.status === 'Completed').length / cleaningTasks.length) * 100)}%` : '0%'}
+            </span>
+            <span className="text-[11px] font-semibold text-emerald-600">
+              {cleaningTasks.length === 0 ? 'Clean Baseline' : (cleaningTasks.filter(t => t.status === 'Completed').length === cleaningTasks.length ? 'Optimal' : 'Active')}
+            </span>
           </div>
           <p className="text-[11px] text-slate-400 mt-1">{cleaningPending} sanitation tasks ongoing</p>
         </div>

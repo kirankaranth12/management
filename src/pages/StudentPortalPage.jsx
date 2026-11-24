@@ -149,9 +149,11 @@ export default function StudentPortalPage() {
     setFeedbackComments('');
   };
 
-  // Filter complaints for the logged-in student (or show all in demo if desired)
+  // Filter complaints for the logged-in student (strictly isolated to their account)
   const myComplaints = complaints.filter(c => {
-    const matchesUser = user?.role === 'Student' ? (c.studentId === user?.id || true) : true;
+    const matchesUser = user?.role === 'Student' 
+      ? (c.studentId === user?.id || (user?.email && c.studentEmail === user?.email)) 
+      : true;
     const matchesStatus = trackerFilter === 'All' || c.status === trackerFilter;
     const matchesSearch = c.title.toLowerCase().includes(trackerSearch.toLowerCase()) || 
                           c.location.toLowerCase().includes(trackerSearch.toLowerCase()) ||
@@ -171,7 +173,7 @@ export default function StudentPortalPage() {
     { id: 'academics', label: 'Academic Info', icon: BookOpen },
     { id: 'timetable', label: 'Timetable', icon: Calendar },
     { id: 'complaint-register', label: 'Register Complaint', icon: AlertCircle, highlight: true },
-    { id: 'complaints-tracker', label: 'Track Complaints', icon: CheckCircle2, badge: complaints.length },
+    { id: 'complaints-tracker', label: 'Track Complaints', icon: CheckCircle2, badge: myComplaints.length },
     { id: 'announcements', label: 'Announcements', icon: Award },
     { id: 'feedback', label: 'Feedback & Ideas', icon: MessageSquare },
     { id: 'lost-found', label: 'Lost & Found', icon: Sparkles, badge: lostAndFound.length }
@@ -211,7 +213,7 @@ export default function StudentPortalPage() {
             onClick={() => setSubTab('complaints-tracker')}
             className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-all"
           >
-            Track Status ({complaints.length})
+            Track Status ({myComplaints.length})
           </button>
         </div>
       </div>

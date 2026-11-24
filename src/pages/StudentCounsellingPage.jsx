@@ -1,33 +1,33 @@
 import React, { useState } from 'react';
-import { 
-  HeartHandshake, 
-  Calendar, 
-  Clock, 
-  ShieldCheck, 
-  CheckCircle2, 
-  MessageSquare, 
-  Send, 
-  BookOpen, 
-  PhoneCall, 
-  Check, 
-  Lock, 
+import {
+  HeartHandshake,
+  Calendar,
+  Clock,
+  ShieldCheck,
+  CheckCircle2,
+  MessageSquare,
+  Send,
+  BookOpen,
+  PhoneCall,
+  Check,
+  Lock,
   UserCheck,
   AlertCircle
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
 export default function StudentCounsellingPage() {
-  const { 
-    user, 
-    counsellingAppointments, 
-    bookCounselling, 
-    updateAppointment, 
+  const {
+    user,
+    counsellingAppointments,
+    bookCounselling,
+    updateAppointment,
     sendCounsellingMessage,
-    showToast 
+    showToast
   } = useApp();
 
   const [activeTab, setActiveTab] = useState('book'); // 'book' | 'appointments' | 'counsellor-view' | 'resources'
-  
+
   // Book Appointment Form State
   const [category, setCategory] = useState('Academic Stress');
   const [appDate, setAppDate] = useState('2026-11-25');
@@ -77,11 +77,11 @@ export default function StudentCounsellingPage() {
 
   const myAppointments = isCounsellor
     ? counsellingAppointments
-    : counsellingAppointments.filter(a => a.studentId === user?.id || true);
+    : counsellingAppointments.filter(a => a.studentId === user?.id || (user?.email && a.studentEmail === user?.email));
 
   return (
     <div className="space-y-6 animate-fade-in">
-      
+
       {/* Header Banner */}
       <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
@@ -130,33 +130,31 @@ export default function StudentCounsellingPage() {
       <div className="flex items-center gap-1.5 p-1 bg-slate-100 rounded-2xl max-w-fit overflow-x-auto">
         <button
           onClick={() => setActiveTab('book')}
-          className={`px-4 py-2 text-xs font-bold rounded-xl transition-all ${
-            activeTab === 'book' ? 'bg-white text-teal-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
-          }`}
+          className={`px-4 py-2 text-xs font-bold rounded-xl transition-all ${activeTab === 'book' ? 'bg-white text-teal-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
+            }`}
         >
           Book Appointment
         </button>
         <button
           onClick={() => setActiveTab('appointments')}
-          className={`px-4 py-2 text-xs font-bold rounded-xl transition-all ${
-            activeTab === 'appointments' ? 'bg-white text-teal-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
-          }`}
+          className={`px-4 py-2 text-xs font-bold rounded-xl transition-all ${activeTab === 'appointments' ? 'bg-white text-teal-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
+            }`}
         >
           My Sessions ({myAppointments.length})
         </button>
-        <button
-          onClick={() => setActiveTab('counsellor-view')}
-          className={`px-4 py-2 text-xs font-bold rounded-xl transition-all ${
-            activeTab === 'counsellor-view' ? 'bg-white text-teal-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
-          }`}
-        >
-          Counsellor Dashboard (Dr. Maya Patel)
-        </button>
+        {isCounsellor && (
+          <button
+            onClick={() => setActiveTab('counsellor-view')}
+            className={`px-4 py-2 text-xs font-bold rounded-xl transition-all ${activeTab === 'counsellor-view' ? 'bg-white text-teal-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
+              }`}
+          >
+            Counsellor Dashboard Queue
+          </button>
+        )}
         <button
           onClick={() => setActiveTab('resources')}
-          className={`px-4 py-2 text-xs font-bold rounded-xl transition-all ${
-            activeTab === 'resources' ? 'bg-white text-teal-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
-          }`}
+          className={`px-4 py-2 text-xs font-bold rounded-xl transition-all ${activeTab === 'resources' ? 'bg-white text-teal-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
+            }`}
         >
           Guidance & Helpline
         </button>
@@ -168,7 +166,7 @@ export default function StudentCounsellingPage() {
           <div className="pb-4 border-b border-slate-100 mb-6">
             <h2 className="text-xl font-black text-slate-900">Request a Confidential Session</h2>
             <p className="text-xs text-slate-500 mt-1">
-              Select what you'd like support with. Dr. Maya Patel will confirm the slot or provide secure online meeting details.
+              Select what you'd like support with. The campus counsellor will confirm the slot or provide secure meeting details.
             </p>
           </div>
 
@@ -243,7 +241,7 @@ export default function StudentCounsellingPage() {
               disabled={isBooking}
               className="w-full py-3 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-bold shadow-md shadow-teal-500/20 transition-all"
             >
-              {isBooking ? 'Requesting Appointment...' : 'Submit Confidential Request to Dr. Maya Patel'}
+              {isBooking ? 'Requesting Appointment...' : 'Submit Confidential Request to Counsellor'}
             </button>
           </form>
         </div>
@@ -252,7 +250,7 @@ export default function StudentCounsellingPage() {
       {/* ===================== TAB 2: MY SESSIONS & CONFIDENTIAL MESSAGING ===================== */}
       {activeTab === 'appointments' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          
+
           {/* Left: Appointments List */}
           <div className="lg:col-span-6 space-y-4">
             <h3 className="text-sm font-extrabold text-slate-900">Your Counselling Appointments</h3>
@@ -265,49 +263,47 @@ export default function StudentCounsellingPage() {
               </div>
             ) : (
               myAppointments.map((app) => (
-              <div
-                key={app.id}
-                className={`p-5 rounded-3xl border transition-all ${
-                  activeAppForChat?.id === app.id ? 'bg-teal-50/60 border-teal-400 ring-2 ring-teal-500/20' : 'bg-white border-slate-200/80 shadow-xs'
-                }`}
-              >
-                <div className="flex items-start justify-between">
-                  <div>
-                    <span className="text-[10px] font-mono font-bold text-teal-800 bg-teal-100 px-2 py-0.5 rounded">
-                      {app.id}
+                <div
+                  key={app.id}
+                  className={`p-5 rounded-3xl border transition-all ${activeAppForChat?.id === app.id ? 'bg-teal-50/60 border-teal-400 ring-2 ring-teal-500/20' : 'bg-white border-slate-200/80 shadow-xs'
+                    }`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <span className="text-[10px] font-mono font-bold text-teal-800 bg-teal-100 px-2 py-0.5 rounded">
+                        {app.id}
+                      </span>
+                      <h4 className="text-xs font-bold text-slate-900 mt-1">{app.category}</h4>
+                      <p className="text-[11px] text-slate-500 mt-0.5">
+                        📅 {app.date} • 🕒 {app.timeSlot}
+                      </p>
+                      <p className="text-[11px] text-teal-700 font-semibold mt-0.5">{app.mode}</p>
+                      <p className="text-[11px] text-slate-400 mt-1">Counsellor: {app.counsellorName}</p>
+                    </div>
+
+                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${app.status === 'Confirmed' ? 'bg-emerald-100 text-emerald-800' : (app.status === 'Completed' ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800')
+                      }`}>
+                      {app.status}
                     </span>
-                    <h4 className="text-xs font-bold text-slate-900 mt-1">{app.category}</h4>
-                    <p className="text-[11px] text-slate-500 mt-0.5">
-                      📅 {app.date} • 🕒 {app.timeSlot}
-                    </p>
-                    <p className="text-[11px] text-teal-700 font-semibold mt-0.5">{app.mode}</p>
-                    <p className="text-[11px] text-slate-400 mt-1">Counsellor: {app.counsellorName}</p>
                   </div>
 
-                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
-                    app.status === 'Confirmed' ? 'bg-emerald-100 text-emerald-800' : (app.status === 'Completed' ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800')
-                  }`}>
-                    {app.status}
-                  </span>
-                </div>
+                  {app.counsellorNotes && (
+                    <div className="mt-3 p-2.5 rounded-xl bg-teal-50 text-[11px] text-teal-900 font-medium">
+                      Dr. Patel's Note: {app.counsellorNotes}
+                    </div>
+                  )}
 
-                {app.counsellorNotes && (
-                  <div className="mt-3 p-2.5 rounded-xl bg-teal-50 text-[11px] text-teal-900 font-medium">
-                    Dr. Patel's Note: {app.counsellorNotes}
+                  <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
+                    <button
+                      onClick={() => setActiveAppForChat(app)}
+                      className="text-xs font-bold text-teal-700 hover:text-teal-900 flex items-center gap-1.5"
+                    >
+                      <MessageSquare className="w-3.5 h-3.5" />
+                      Open Confidential Message Thread ({app.messages?.length || 0})
+                    </button>
                   </div>
-                )}
-
-                <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
-                  <button
-                    onClick={() => setActiveAppForChat(app)}
-                    className="text-xs font-bold text-teal-700 hover:text-teal-900 flex items-center gap-1.5"
-                  >
-                    <MessageSquare className="w-3.5 h-3.5" />
-                    Open Confidential Message Thread ({app.messages?.length || 0})
-                  </button>
                 </div>
-              </div>
-            )))}
+              )))}
           </div>
 
           {/* Right: Direct Confidential Chat Thread */}
@@ -333,9 +329,8 @@ export default function StudentCounsellingPage() {
                   const isMe = msg.sender === (user?.name || 'Student Member');
                   return (
                     <div key={i} className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
-                      <div className={`max-w-xs px-3.5 py-2.5 rounded-2xl text-xs ${
-                        isMe ? 'bg-teal-600 text-white rounded-br-xs' : 'bg-slate-100 text-slate-800 rounded-bl-xs'
-                      }`}>
+                      <div className={`max-w-xs px-3.5 py-2.5 rounded-2xl text-xs ${isMe ? 'bg-teal-600 text-white rounded-br-xs' : 'bg-slate-100 text-slate-800 rounded-bl-xs'
+                        }`}>
                         <p className="font-semibold text-[10px] opacity-75 mb-0.5">{msg.sender} ({msg.role})</p>
                         <p>{msg.text}</p>
                       </div>
@@ -376,7 +371,7 @@ export default function StudentCounsellingPage() {
         <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
           <div className="flex items-center justify-between pb-4 border-b border-slate-100">
             <div>
-              <h3 className="text-sm font-extrabold text-slate-900">Dr. Maya Patel - Clinical Appointment Queue</h3>
+              <h3 className="text-sm font-extrabold text-slate-900">Student Counselling Clinical Appointment Queue</h3>
               <p className="text-xs text-slate-500">Confirm sessions, record clinical notes, or complete appointments.</p>
             </div>
             <span className="text-xs font-bold text-teal-800 bg-teal-50 px-3 py-1 rounded-lg">
@@ -436,7 +431,7 @@ export default function StudentCounsellingPage() {
               24/7 Campus Crisis & Wellbeing Helpline
             </h3>
             <p className="text-xs text-slate-500">Free, confidential assistance available round-the-clock for any student in distress.</p>
-            
+
             <div className="p-4 bg-teal-50 rounded-2xl border border-teal-200">
               <span className="text-[10px] font-bold text-teal-800 uppercase block">Direct Toll-Free Line:</span>
               <p className="text-xl font-black text-teal-950 mt-0.5">1-800-CAMPUS-CARE</p>
@@ -450,7 +445,7 @@ export default function StudentCounsellingPage() {
               Self-Care & Mindful Study Strategies
             </h3>
             <p className="text-xs text-slate-500">Handbooks curated by our Clinical Psychology team:</p>
-            
+
             <div className="space-y-2 text-xs">
               <div className="p-3 bg-slate-50 rounded-xl font-medium text-slate-800">
                 📘 Managing Mid-Term Stress: The 25-5 Pomodoro & Sleep Hygiene Method

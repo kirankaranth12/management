@@ -23,6 +23,7 @@ export default function CleaningDepartmentPage() {
     updateCleaningTask, 
     complaints, 
     updateComplaintStatus, 
+    hrEmployees = [],
     user,
     showToast 
   } = useApp();
@@ -47,13 +48,14 @@ export default function CleaningDepartmentPage() {
   const [selectedTask, setSelectedTask] = useState(null);
   const [completionNotes, setCompletionNotes] = useState('');
 
-  // Sanitation Staff List
-  const staffMembers = [
-    { name: 'Ramesh Sharma', role: 'Senior Sanitation Lead', shift: 'Morning (06:00 AM - 02:00 PM)', activeTasks: 2 },
-    { name: 'Sunita Devi', role: 'Floor Hygiene Specialist', shift: 'Morning (07:00 AM - 03:00 PM)', activeTasks: 1 },
-    { name: 'Anil Verma', role: 'Waste & Chemical Safety Crew', shift: 'Afternoon (01:00 PM - 09:00 PM)', activeTasks: 1 },
-    { name: 'Geeta Kumari', role: 'Disinfection Specialist', shift: 'Morning (07:00 AM - 03:00 PM)', activeTasks: 0 }
-  ];
+  // Sanitation Staff List (Dynamic from registered staff or generic roster)
+  const sanitationStaff = hrEmployees?.filter(e => e.department === 'Sanitation & Facilities' || e.role === 'Cleaning') || [];
+  const staffMembers = sanitationStaff.length > 0
+    ? sanitationStaff.map(e => ({ name: e.name, role: e.designation || 'Sanitation Lead', shift: 'Day Shift', activeTasks: cleaningTasks.filter(t => t.assignedStaff === e.name && t.status !== 'Completed').length }))
+    : [
+        { name: 'Sanitation Officer 1', role: 'Senior Sanitation Lead', shift: 'Morning Shift', activeTasks: 0 },
+        { name: 'Sanitation Officer 2', role: 'Floor Hygiene Specialist', shift: 'Afternoon Shift', activeTasks: 0 }
+      ];
 
   // Handle photo upload
   const handlePhotoUpload = (e) => {
@@ -345,10 +347,9 @@ export default function CleaningDepartmentPage() {
                       className="text-xs font-bold text-slate-800 bg-white border border-slate-200 rounded-lg px-2 py-1"
                     >
                       <option value="Unassigned">Unassigned</option>
-                      <option value="Ramesh Sharma">Ramesh Sharma</option>
-                      <option value="Sunita Devi">Sunita Devi</option>
-                      <option value="Anil Verma">Anil Verma</option>
-                      <option value="Geeta Kumari">Geeta Kumari</option>
+                      {staffMembers.map(s => (
+                        <option key={s.name} value={s.name}>{s.name}</option>
+                      ))}
                     </select>
                   </div>
 
@@ -558,10 +559,9 @@ export default function CleaningDepartmentPage() {
                   className="w-full px-3.5 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl font-semibold"
                 >
                   <option value="Unassigned">Assign Later</option>
-                  <option value="Ramesh Sharma">Ramesh Sharma</option>
-                  <option value="Sunita Devi">Sunita Devi</option>
-                  <option value="Anil Verma">Anil Verma</option>
-                  <option value="Geeta Kumari">Geeta Kumari</option>
+                  {staffMembers.map(s => (
+                    <option key={s.name} value={s.name}>{s.name}</option>
+                  ))}
                 </select>
               </div>
             </div>
