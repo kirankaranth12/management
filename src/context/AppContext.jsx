@@ -44,6 +44,7 @@ export function AppProvider({ children }) {
   const [managementStats, setManagementStats] = useState(null);
   const [departments, setDepartments] = useState([]);
   const [studentAcademics, setStudentAcademics] = useState(null);
+  const [timetable, setTimetable] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -103,7 +104,8 @@ export function AppProvider({ children }) {
         api.getDepartments(),
         api.getNotifications(user ? user.id : 'all'),
         api.getStudentAcademics(user ? user.id : 'all'),
-        api.getUsers()
+        api.getUsers(),
+        api.getTimetable()
       ]);
 
       if (cmpRes.success) setComplaints(cmpRes.complaints || []);
@@ -121,6 +123,8 @@ export function AppProvider({ children }) {
       if (notifRes.success) setNotifications(notifRes.notifications || []);
       if (acadRes.success) setStudentAcademics(acadRes);
       if (usersRes && usersRes.success) setAllUsers(usersRes.users || []);
+      if (ttRes && ttRes.success) setTimetable(ttRes.timetable || []);
+      else if (acadRes && acadRes.timetable) setTimetable(acadRes.timetable || []);
     } catch (e) {
       console.error('Error refreshing data:', e);
     } finally {
@@ -489,6 +493,43 @@ export function AppProvider({ children }) {
     return { success: false };
   };
 
+  // Timetable Operations (Faculty & Other staff)
+  const addTimetableSlot = async (slotData) => {
+    const res = await api.addTimetableSlot(slotData);
+    if (res.success) {
+      showToast(`Class slot added: ${slotData.course} on ${slotData.day}!`, 'success');
+      if (res.timetable) setTimetable(res.timetable);
+      else await refreshAllData();
+      return { success: true, slot: res.slot };
+    }
+    showToast(res.message || 'Failed to add class slot.', 'error');
+    return { success: false };
+  };
+
+  const updateTimetableSlot = async (id, slotData) => {
+    const res = await api.updateTimetableSlot(id, slotData);
+    if (res.success) {
+      showToast(`Timetable schedule updated for ${slotData.course || 'class'}!`, 'success');
+      if (res.timetable) setTimetable(res.timetable);
+      else await refreshAllData();
+      return { success: true, slot: res.slot };
+    }
+    showToast(res.message || 'Failed to update timetable slot.', 'error');
+    return { success: false };
+  };
+
+  const deleteTimetableSlot = async (id) => {
+    const res = await api.deleteTimetableSlot(id);
+    if (res.success) {
+      showToast('Class slot removed from timetable.', 'info');
+      if (res.timetable) setTimetable(res.timetable);
+      else await refreshAllData();
+      return { success: true };
+    }
+    showToast(res.message || 'Failed to remove class slot.', 'error');
+    return { success: false };
+  };
+
   // Notifications
   const markNotificationRead = async (id) => {
     await api.markNotificationRead(id);
@@ -573,6 +614,10 @@ export function AppProvider({ children }) {
         saveStudentAttendance,
         saveStudentMarks,
         gradeAssignment,
+        timetable,
+        addTimetableSlot,
+        updateTimetableSlot,
+        deleteTimetableSlot,
         managementStats,
         departments,
         notifications,

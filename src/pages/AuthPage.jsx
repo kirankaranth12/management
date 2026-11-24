@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
-import { 
-  GraduationCap, 
-  Lock, 
-  Mail, 
-  User, 
-  Camera, 
-  ArrowRight, 
-  ShieldCheck, 
-  Eye, 
-  EyeOff, 
-  Sparkles, 
-  CheckCircle2, 
-  Building2, 
-  Phone, 
+import {
+  GraduationCap,
+  Lock,
+  Mail,
+  User,
+  Camera,
+  ArrowRight,
+  ShieldCheck,
+  Eye,
+  EyeOff,
+  Sparkles,
+  CheckCircle2,
+  Building2,
+  Phone,
   HelpCircle,
   UploadCloud
 } from 'lucide-react';
@@ -151,7 +151,7 @@ export default function AuthPage({ initialMode = 'register' }) {
   return (
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-slate-100">
       <div className="w-full max-w-4xl bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden grid grid-cols-1 lg:grid-cols-12 animate-fade-in">
-        
+
         {/* Left Visual Column */}
         <div className="lg:col-span-5 bg-blue-800 p-8 sm:p-10 text-white flex flex-col justify-between relative overflow-hidden">
           <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-blue-500/20 blur-3xl pointer-events-none" />
@@ -204,7 +204,7 @@ export default function AuthPage({ initialMode = 'register' }) {
 
         {/* Right Form Column */}
         <div className="lg:col-span-7 p-6 sm:p-10 flex flex-col justify-center">
-          
+
           {/* Top Toggle Switch */}
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -212,7 +212,7 @@ export default function AuthPage({ initialMode = 'register' }) {
                 {mode === 'register' ? 'Create Your Account' : 'Welcome Back'}
               </h2>
               <p className="text-xs text-slate-500 mt-1">
-                {mode === 'register' 
+                {mode === 'register'
                   ? 'First register your credentials with photo, then login anytime.'
                   : 'Enter your College ID or Email to access your dashboard.'}
               </p>
@@ -222,22 +222,20 @@ export default function AuthPage({ initialMode = 'register' }) {
               <button
                 type="button"
                 onClick={() => setMode('register')}
-                className={`px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all ${
-                  mode === 'register'
-                    ? 'bg-white text-blue-700 shadow-sm'
-                    : 'text-slate-500 hover:text-slate-900'
-                }`}
+                className={`px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all ${mode === 'register'
+                  ? 'bg-white text-blue-700 shadow-sm'
+                  : 'text-slate-500 hover:text-slate-900'
+                  }`}
               >
                 1. Register
               </button>
               <button
                 type="button"
                 onClick={() => setMode('login')}
-                className={`px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all ${
-                  mode === 'login'
-                    ? 'bg-white text-blue-700 shadow-sm'
-                    : 'text-slate-500 hover:text-slate-900'
-                }`}
+                className={`px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all ${mode === 'login'
+                  ? 'bg-white text-blue-700 shadow-sm'
+                  : 'text-slate-500 hover:text-slate-900'
+                  }`}
               >
                 2. Login
               </button>
@@ -247,13 +245,13 @@ export default function AuthPage({ initialMode = 'register' }) {
           {/* ===================== REGISTRATION FORM ===================== */}
           {mode === 'register' ? (
             <form onSubmit={handleRegister} className="space-y-4">
-              
+
               {/* Real Device Photo Upload */}
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80">
                 <label className="block text-xs font-bold text-slate-800 mb-2">
                   Profile Photograph (Upload from Device)
                 </label>
-                
+
                 <div className="flex items-center gap-4">
                   <div className="relative shrink-0">
                     {avatarPreview ? (
@@ -474,7 +472,7 @@ export default function AuthPage({ initialMode = 'register' }) {
           ) : (
             /* ===================== LOGIN FORM ===================== */
             <form onSubmit={handleLogin} className="space-y-4">
-              
+
               {/* Role Filter Pills */}
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1.5">
@@ -486,11 +484,10 @@ export default function AuthPage({ initialMode = 'register' }) {
                       type="button"
                       key={r}
                       onClick={() => setLoginRole(r)}
-                      className={`py-1.5 text-xs font-bold rounded-lg transition-all ${
-                        loginRole === r
-                          ? 'bg-blue-600 text-white shadow-xs'
-                          : 'text-slate-600 hover:text-slate-900'
-                      }`}
+                      className={`py-1.5 text-xs font-bold rounded-lg transition-all ${loginRole === r
+                        ? 'bg-blue-600 text-white shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900'
+                        }`}
                     >
                       {r}
                     </button>
@@ -614,9 +611,8 @@ export default function AuthPage({ initialMode = 'register' }) {
               </div>
 
               {forgotResult && (
-                <div className={`p-3 rounded-xl text-xs font-medium ${
-                  forgotResult.success ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-rose-50 text-rose-800 border border-rose-200'
-                }`}>
+                <div className={`p-3 rounded-xl text-xs font-medium ${forgotResult.success ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-rose-50 text-rose-800 border border-rose-200'
+                  }`}>
                   <p>{forgotResult.message}</p>
                   {forgotResult.tempPassword && (
                     <p className="mt-1 font-bold">Use Password: {forgotResult.tempPassword}</p>

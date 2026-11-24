@@ -22,7 +22,12 @@ import {
   Eye,
   Info,
   Download,
-  Package
+  Package,
+  Plus,
+  Edit,
+  Trash2,
+  X,
+  MapPin
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import Avatar from '../components/Avatar';
@@ -39,6 +44,10 @@ export default function StudentPortalPage() {
     claimLostFoundItem,
     studentAcademics,
     submitSuggestion,
+    timetable: appTimetable,
+    addTimetableSlot,
+    updateTimetableSlot,
+    deleteTimetableSlot,
     showToast
   } = useApp();
 
@@ -165,10 +174,78 @@ export default function StudentPortalPage() {
   });
 
   const courses = studentAcademics?.courses || [];
-  const timetable = studentAcademics?.timetable || [];
+  const timetable = (appTimetable && appTimetable.length > 0)
+    ? appTimetable
+    : (studentAcademics?.timetable || []);
 
-  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const dayTimetable = timetable.filter(t => t.day === selectedDay);
+
+  // Timetable State & Operations for Faculty and Management staff
+  const canManageTimetable = user?.role !== 'Student';
+  const [slotModalOpen, setSlotModalOpen] = useState(false);
+  const [isEditingSlot, setIsEditingSlot] = useState(false);
+  const [currentSlotId, setCurrentSlotId] = useState(null);
+  const [slotDay, setSlotDay] = useState('Monday');
+  const [slotTime, setSlotTime] = useState('09:00 AM - 10:30 AM');
+  const [slotCourse, setSlotCourse] = useState('CS-301: Advanced Data Structures');
+  const [slotRoom, setSlotRoom] = useState('Lecture Hall 304');
+  const [slotFaculty, setSlotFaculty] = useState(user?.name || 'Dr. Robert Vance');
+  const [slotDepartment, setSlotDepartment] = useState(user?.department || 'Computer Science & Engineering');
+
+  const handleOpenAddSlot = () => {
+    setIsEditingSlot(false);
+    setCurrentSlotId(null);
+    setSlotDay(selectedDay || 'Monday');
+    setSlotTime('09:00 AM - 10:30 AM');
+    setSlotCourse('CS-301: Advanced Data Structures');
+    setSlotRoom('Lecture Hall 304');
+    setSlotFaculty(user?.name || 'Faculty Member');
+    setSlotDepartment(user?.department || 'Computer Science & Engineering');
+    setSlotModalOpen(true);
+  };
+
+  const handleOpenEditSlot = (slot) => {
+    setIsEditingSlot(true);
+    setCurrentSlotId(slot.id);
+    setSlotDay(slot.day || selectedDay);
+    setSlotTime(slot.time || '09:00 AM - 10:30 AM');
+    setSlotCourse(slot.course || '');
+    setSlotRoom(slot.room || '');
+    setSlotFaculty(slot.faculty || user?.name || '');
+    setSlotDepartment(slot.department || 'Computer Science & Engineering');
+    setSlotModalOpen(true);
+  };
+
+  const handleSaveSlot = async (e) => {
+    e.preventDefault();
+    if (!slotCourse.trim() || !slotTime.trim() || !slotRoom.trim()) {
+      showToast('Please fill all mandatory slot fields.', 'error');
+      return;
+    }
+
+    const payload = {
+      day: slotDay,
+      time: slotTime,
+      course: slotCourse,
+      room: slotRoom,
+      faculty: slotFaculty || user?.name || 'Faculty Member',
+      department: slotDepartment
+    };
+
+    if (isEditingSlot && currentSlotId) {
+      await updateTimetableSlot(currentSlotId, payload);
+    } else {
+      await addTimetableSlot(payload);
+    }
+    setSlotModalOpen(false);
+  };
+
+  const handleDeleteSlot = async (id, courseName) => {
+    if (window.confirm(`Are you sure you want to remove "${courseName}" from the timetable?`)) {
+      await deleteTimetableSlot(id);
+    }
+  };
 
   const subTabs = [
     { id: 'overview', label: 'Overview & Profile', icon: UserCheck },
@@ -552,37 +629,68 @@ export default function StudentPortalPage() {
         <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
             <div>
-              <h3 className="text-base font-black text-slate-900">Weekly Lecture & Lab Schedule</h3>
-              <p className="text-xs text-slate-500">Select day of the week to view class timings and hall allotments.</p>
+              <div className="flex items-center gap-2">
+                <h3 className="text-base font-black text-slate-900">Weekly Lecture & Lab Schedule</h3>
+                {canManageTimetable && (
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-blue-100 text-blue-800">
+                    Faculty & Staff Management Enabled
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-slate-500">
+                Select day of the week to view class timings and hall allotments.
+              </p>
             </div>
 
-            {/* Day Selector */}
-            <div className="flex items-center gap-1.5 p-1 bg-slate-100 rounded-xl overflow-x-auto">
-              {days.map((day) => (
+            <div className="flex items-center gap-2 self-start sm:self-auto flex-wrap">
+              {/* Day Selector */}
+              <div className="flex items-center gap-1.5 p-1 bg-slate-100 rounded-xl overflow-x-auto">
+                {days.map((day) => (
+                  <button
+                    key={day}
+                    onClick={() => setSelectedDay(day)}
+                    className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${selectedDay === day
+                      ? 'bg-blue-600 text-white shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                  >
+                    {day}
+                  </button>
+                ))}
+              </div>
+
+              {canManageTimetable && (
                 <button
-                  key={day}
-                  onClick={() => setSelectedDay(day)}
-                  className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${selectedDay === day
-                    ? 'bg-blue-600 text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                    }`}
+                  onClick={handleOpenAddSlot}
+                  className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 transition-all flex items-center gap-1.5"
                 >
-                  {day}
+                  <Plus className="w-3.5 h-3.5" />
+                  Add Slot
                 </button>
-              ))}
+              )}
             </div>
           </div>
 
           {/* Timetable Cards */}
           <div className="space-y-3">
             {dayTimetable.length === 0 ? (
-              <div className="py-12 text-center text-slate-400 text-xs">
-                No classes scheduled for {selectedDay}. Enjoy your study hours!
+              <div className="py-12 text-center text-slate-400 text-xs rounded-2xl bg-slate-50 border border-slate-200/70">
+                <Calendar className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+                <p className="font-bold text-slate-600">No classes scheduled for {selectedDay}.</p>
+                <p className="text-[11px] text-slate-400 mt-0.5">Enjoy your study hours or free research time!</p>
+                {canManageTimetable && (
+                  <button
+                    onClick={handleOpenAddSlot}
+                    className="mt-3 px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold"
+                  >
+                    + Schedule Class on {selectedDay}
+                  </button>
+                )}
               </div>
             ) : (
               dayTimetable.map((slot, index) => (
                 <div
-                  key={index}
+                  key={slot.id || index}
                   className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:border-blue-300 transition-colors"
                 >
                   <div className="flex items-start sm:items-center gap-4">
@@ -592,19 +700,159 @@ export default function StudentPortalPage() {
                     </div>
                     <div>
                       <h4 className="text-xs font-bold text-slate-900">{slot.course}</h4>
-                      <p className="text-[11px] text-slate-500 mt-0.5">Faculty In-charge: {slot.faculty}</p>
+                      <p className="text-[11px] text-slate-500 mt-0.5">
+                        Faculty: {slot.faculty || 'Unassigned'} • Dept: {slot.department || 'General'}
+                      </p>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-2 self-start sm:self-auto">
-                    <span className="text-xs font-bold px-3 py-1 rounded-xl bg-white border border-slate-200 text-slate-700">
-                      📍 {slot.room}
+                    <span className="text-xs font-bold px-3 py-1 rounded-xl bg-white border border-slate-200 text-slate-700 flex items-center gap-1">
+                      <MapPin className="w-3 h-3 text-slate-400" />
+                      {slot.room}
                     </span>
+
+                    {canManageTimetable && (
+                      <div className="flex items-center gap-1 pl-1">
+                        <button
+                          onClick={() => handleOpenEditSlot(slot)}
+                          className="p-1.5 rounded-lg text-slate-500 hover:text-blue-700 hover:bg-blue-50 transition-colors"
+                          title="Edit slot schedule"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteSlot(slot.id, slot.course)}
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                          title="Delete slot"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))
             )}
           </div>
+
+          {/* Add / Edit Slot Modal for non-students */}
+          {slotModalOpen && canManageTimetable && (
+            <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+              <div className="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border border-slate-200 animate-scale-in">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                  <h3 className="text-sm font-black text-slate-900">
+                    {isEditingSlot ? 'Edit Class Timetable Slot' : 'Add New Class Slot'}
+                  </h3>
+                  <button
+                    onClick={() => setSlotModalOpen(false)}
+                    className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <form onSubmit={handleSaveSlot} className="mt-4 space-y-3.5">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">Course Title & Code *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. CS-301: Advanced Data Structures"
+                      value={slotCourse}
+                      onChange={(e) => setSlotCourse(e.target.value)}
+                      className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-blue-500 outline-none"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">Day of Week *</label>
+                      <select
+                        value={slotDay}
+                        onChange={(e) => setSlotDay(e.target.value)}
+                        className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl font-medium focus:bg-white focus:border-blue-500 outline-none"
+                      >
+                        <option value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                        <option value="Saturday">Saturday</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">Time Slot *</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="e.g. 09:00 AM - 10:30 AM"
+                        value={slotTime}
+                        onChange={(e) => setSlotTime(e.target.value)}
+                        className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-blue-500 outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">Lecture Hall / Room *</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="e.g. LH-304 / Lab 2"
+                        value={slotRoom}
+                        onChange={(e) => setSlotRoom(e.target.value)}
+                        className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-blue-500 outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1">Department</label>
+                      <select
+                        value={slotDepartment}
+                        onChange={(e) => setSlotDepartment(e.target.value)}
+                        className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl font-medium focus:bg-white focus:border-blue-500 outline-none"
+                      >
+                        <option value="Computer Science & Engineering">Computer Science & Engineering</option>
+                        <option value="Electronics & Communication">Electronics & Communication</option>
+                        <option value="Mechanical Engineering">Mechanical Engineering</option>
+                        <option value="Civil Engineering">Civil Engineering</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">Faculty In-charge</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Dr. Robert Vance"
+                      value={slotFaculty}
+                      onChange={(e) => setSlotFaculty(e.target.value)}
+                      className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-blue-500 outline-none"
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+                    <button
+                      type="button"
+                      onClick={() => setSlotModalOpen(false)}
+                      className="px-3.5 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className="px-4 py-1.5 text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-xs"
+                    >
+                      {isEditingSlot ? 'Save Changes' : 'Add Class Slot'}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
         </div>
       )}
 

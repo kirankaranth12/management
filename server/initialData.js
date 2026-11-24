@@ -137,10 +137,10 @@ export const initialData = {
       { code: "HU-301", name: "Professional Ethics & Human Values", credits: 2, faculty: "Faculty Instructor", attendance: 0, attendedClasses: 0, totalClasses: 0, marks: "0/100", grade: "-" }
     ],
     timetable: [
-      { day: "Monday", time: "09:00 AM - 10:30 AM", course: "CS-301: Advanced Data Structures", room: "Hall 101", faculty: "Faculty Instructor" },
-      { day: "Tuesday", time: "11:00 AM - 12:30 PM", course: "CS-304: Distributed Databases", room: "Lab 2", faculty: "Faculty Instructor" },
-      { day: "Thursday", time: "02:00 PM - 03:30 PM", course: "CS-308: Cloud Architecture", room: "Hall 304", faculty: "Faculty Instructor" },
-      { day: "Friday", time: "10:00 AM - 11:30 AM", course: "HU-301: Professional Ethics", room: "Hall 202", faculty: "Faculty Instructor" }
+      { id: "TT-001", day: "Monday", time: "09:00 AM - 10:30 AM", course: "CS-301: Advanced Data Structures", room: "Hall 101", faculty: "Faculty Instructor" },
+      { id: "TT-002", day: "Tuesday", time: "11:00 AM - 12:30 PM", course: "CS-304: Distributed Databases", room: "Lab 2", faculty: "Faculty Instructor" },
+      { id: "TT-003", day: "Thursday", time: "02:00 PM - 03:30 PM", course: "CS-308: Cloud Architecture", room: "Hall 304", faculty: "Faculty Instructor" },
+      { id: "TT-004", day: "Friday", time: "10:00 AM - 11:30 AM", course: "HU-301: Professional Ethics", room: "Hall 202", faculty: "Faculty Instructor" }
     ],
     studentRoster: [],
     courseMarks: {}

@@ -1199,6 +1199,101 @@ app.post('/api/academics/attendance', (req, res) => {
   res.json({ success: true, message: 'Attendance records updated successfully!' });
 });
 
+// ======================== TIMETABLE MANAGEMENT ROUTES ========================
+
+// GET Timetable
+app.get('/api/academics/timetable', (req, res) => {
+  if (!db.data.academicData.timetable) db.data.academicData.timetable = [];
+  res.json({ success: true, timetable: db.data.academicData.timetable });
+});
+
+// POST Add Timetable Slot
+app.post('/api/academics/timetable', (req, res) => {
+  const { day, time, course, room, faculty, department } = req.body;
+  if (!day || !time || !course || !room) {
+    return res.status(400).json({ success: false, message: 'Day, time, course, and room are required.' });
+  }
+
+  if (!db.data.academicData.timetable) db.data.academicData.timetable = [];
+
+  const newSlot = {
+    id: `TT-${Date.now()}`,
+    day,
+    time,
+    course,
+    room,
+    faculty: faculty || 'Faculty Instructor',
+    department: department || 'General'
+  };
+
+  db.data.academicData.timetable.push(newSlot);
+
+  createNotification({
+    userId: 'all',
+    targetRole: 'Student',
+    title: `Timetable Updated: ${course}`,
+    message: `New class schedule added: ${day} at ${time} in ${room} (${newSlot.faculty}).`,
+    type: 'academic',
+    link: 'student'
+  });
+
+  db.save();
+  res.json({ success: true, slot: newSlot, timetable: db.data.academicData.timetable });
+});
+
+// PUT Update Timetable Slot
+app.put('/api/academics/timetable/:id', (req, res) => {
+  const { id } = req.params;
+  const { day, time, course, room, faculty, department } = req.body;
+
+  if (!db.data.academicData.timetable) db.data.academicData.timetable = [];
+
+  const slotIndex = db.data.academicData.timetable.findIndex(s => s.id === id);
+  if (slotIndex === -1) {
+    return res.status(404).json({ success: false, message: 'Class slot not found.' });
+  }
+
+  db.data.academicData.timetable[slotIndex] = {
+    ...db.data.academicData.timetable[slotIndex],
+    day: day || db.data.academicData.timetable[slotIndex].day,
+    time: time || db.data.academicData.timetable[slotIndex].time,
+    course: course || db.data.academicData.timetable[slotIndex].course,
+    room: room || db.data.academicData.timetable[slotIndex].room,
+    faculty: faculty || db.data.academicData.timetable[slotIndex].faculty,
+    department: department || db.data.academicData.timetable[slotIndex].department
+  };
+
+  const updatedSlot = db.data.academicData.timetable[slotIndex];
+
+  createNotification({
+    userId: 'all',
+    targetRole: 'Student',
+    title: `Schedule Updated: ${updatedSlot.course}`,
+    message: `Class schedule modified: ${updatedSlot.day} at ${updatedSlot.time} in ${updatedSlot.room}.`,
+    type: 'academic',
+    link: 'student'
+  });
+
+  db.save();
+  res.json({ success: true, slot: updatedSlot, timetable: db.data.academicData.timetable });
+});
+
+// DELETE Timetable Slot
+app.delete('/api/academics/timetable/:id', (req, res) => {
+  const { id } = req.params;
+  if (!db.data.academicData.timetable) db.data.academicData.timetable = [];
+
+  const prevLen = db.data.academicData.timetable.length;
+  db.data.academicData.timetable = db.data.academicData.timetable.filter(s => s.id !== id);
+
+  if (db.data.academicData.timetable.length === prevLen) {
+    return res.status(404).json({ success: false, message: 'Slot not found.' });
+  }
+
+  db.save();
+  res.json({ success: true, message: 'Class slot removed from timetable.', timetable: db.data.academicData.timetable });
+});
+
 // ======================== LOST AND FOUND ROUTES ========================
 
 app.get('/api/lost-found', (req, res) => {

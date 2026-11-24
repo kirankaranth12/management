@@ -411,6 +411,45 @@ function fallbackHandler(endpoint, options = {}) {
     return { success: true, message: `Assignment graded: ${body.marks}/${body.maxMarks || 50} recorded.` };
   }
 
+  // Timetable
+  if (endpoint === '/academics/timetable' && method === 'GET') {
+    if (!db.academicData.timetable) db.academicData.timetable = [];
+    return { success: true, timetable: db.academicData.timetable };
+  }
+  if (endpoint === '/academics/timetable' && method === 'POST') {
+    if (!db.academicData.timetable) db.academicData.timetable = [];
+    const newSlot = {
+      id: `TT-${Date.now()}`,
+      day: body.day,
+      time: body.time,
+      course: body.course,
+      room: body.room,
+      faculty: body.faculty || 'Faculty Instructor',
+      department: body.department || 'General'
+    };
+    db.academicData.timetable.push(newSlot);
+    saveLocalDB(db);
+    return { success: true, slot: newSlot, timetable: db.academicData.timetable };
+  }
+  if (endpoint.startsWith('/academics/timetable/') && method === 'PUT') {
+    const id = endpoint.split('/')[3];
+    if (!db.academicData.timetable) db.academicData.timetable = [];
+    const slot = db.academicData.timetable.find(s => s.id === id);
+    if (slot) {
+      Object.assign(slot, body);
+      saveLocalDB(db);
+      return { success: true, slot, timetable: db.academicData.timetable };
+    }
+    return { success: false, message: 'Slot not found.' };
+  }
+  if (endpoint.startsWith('/academics/timetable/') && method === 'DELETE') {
+    const id = endpoint.split('/')[3];
+    if (!db.academicData.timetable) db.academicData.timetable = [];
+    db.academicData.timetable = db.academicData.timetable.filter(s => s.id !== id);
+    saveLocalDB(db);
+    return { success: true, message: 'Slot deleted.', timetable: db.academicData.timetable };
+  }
+
   // Lost & Found
   if (endpoint === '/lost-found' && method === 'GET') return { success: true, items: db.lostAndFound };
 
@@ -486,6 +525,10 @@ export const api = {
   saveClassAttendance: (data) => request('/academics/attendance', { method: 'POST', body: JSON.stringify(data) }),
   saveStudentMarks: (data) => request('/academics/marks', { method: 'POST', body: JSON.stringify(data) }),
   gradeAssignment: (data) => request('/academics/grade-assignment', { method: 'POST', body: JSON.stringify(data) }),
+  getTimetable: () => request('/academics/timetable'),
+  addTimetableSlot: (data) => request('/academics/timetable', { method: 'POST', body: JSON.stringify(data) }),
+  updateTimetableSlot: (id, data) => request(`/academics/timetable/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteTimetableSlot: (id) => request(`/academics/timetable/${id}`, { method: 'DELETE' }),
 
   // Lost & Found
   getLostAndFound: () => request('/lost-found'),

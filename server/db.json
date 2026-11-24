@@ -90,6 +90,17 @@
   "announcements": [],
   "notifications": [
     {
+      "id": "NOTIF-1795516765923-498",
+      "userId": "all",
+      "targetRole": "Student",
+      "title": "Timetable Updated: CS-305: Artificial Intelligence",
+      "message": "New class schedule added: Wednesday at 10:00 AM - 11:30 AM in LH-102 (Dr. Jane Miller).",
+      "type": "academic",
+      "link": "student",
+      "read": false,
+      "createdAt": "2026-11-24T10:39:25.923Z"
+    },
+    {
       "id": "NOTIF-1795514916210-187",
       "userId": "STU-2024-007",
       "targetRole": "Student",
@@ -250,28 +261,32 @@
         "time": "09:00 AM - 10:30 AM",
         "course": "CS-301: Advanced Data Structures",
         "room": "Hall 101",
-        "faculty": "Faculty Instructor"
+        "faculty": "Faculty Instructor",
+        "id": "TT-001"
       },
       {
         "day": "Tuesday",
         "time": "11:00 AM - 12:30 PM",
         "course": "CS-304: Distributed Databases",
         "room": "Lab 2",
-        "faculty": "Faculty Instructor"
+        "faculty": "Faculty Instructor",
+        "id": "TT-002"
       },
       {
         "day": "Thursday",
         "time": "02:00 PM - 03:30 PM",
         "course": "CS-308: Cloud Architecture",
         "room": "Hall 304",
-        "faculty": "Faculty Instructor"
+        "faculty": "Faculty Instructor",
+        "id": "TT-003"
       },
       {
         "day": "Friday",
         "time": "10:00 AM - 11:30 AM",
         "course": "HU-301: Professional Ethics",
         "room": "Hall 202",
-        "faculty": "Faculty Instructor"
+        "faculty": "Faculty Instructor",
+        "id": "TT-004"
       }
     ],
     "studentRoster": [],
