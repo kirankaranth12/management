@@ -14,14 +14,14 @@ function getLocalDB() {
   const cloned = JSON.parse(JSON.stringify(initialData));
   try {
     localStorage.setItem('campusconnect_db', JSON.stringify(cloned));
-  } catch (e) {}
+  } catch (e) { }
   return cloned;
 }
 
 function saveLocalDB(data) {
   try {
     localStorage.setItem('campusconnect_db', JSON.stringify(data));
-  } catch (e) {}
+  } catch (e) { }
 }
 
 async function request(endpoint, options = {}) {
@@ -55,7 +55,7 @@ function fallbackHandler(endpoint, options = {}) {
       return { success: false, message: 'User already exists.' };
     }
     const newUser = {
-      id: body.id || (body.role === 'Student' ? `STU-2024-${String(db.users.length + 1).padStart(3, '0')}` : `EMP-${body.role.toUpperCase().slice(0,3)}-${String(db.users.length + 1).padStart(3, '0')}`),
+      id: body.id || (body.role === 'Student' ? `STU-2024-${String(db.users.length + 1).padStart(3, '0')}` : `EMP-${body.role.toUpperCase().slice(0, 3)}-${String(db.users.length + 1).padStart(3, '0')}`),
       name: body.name,
       email: body.email,
       password: body.password,
@@ -95,7 +95,7 @@ function fallbackHandler(endpoint, options = {}) {
 
   // Auth Login
   if (endpoint === '/auth/login' && method === 'POST') {
-    const user = db.users.find(u => 
+    const user = db.users.find(u =>
       (u.email.toLowerCase() === body.identifier.toLowerCase() || u.id.toLowerCase() === body.identifier.toLowerCase() || (u.rollNo && u.rollNo.toLowerCase() === body.identifier.toLowerCase()))
     );
     if (!user) return { success: false, message: 'No account found with this ID or Email.' };

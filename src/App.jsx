@@ -18,16 +18,20 @@ import NotificationsPage from './pages/NotificationsPage';
 import ProfilePage from './pages/ProfilePage';
 import AuthPage from './pages/AuthPage';
 
-function RestrictedAccess({ departmentName, allowedRole, onReturn }) {
+function RestrictedAccess({ departmentName, allowedRole, description, onReturn }) {
   return (
-    <div className="bg-white p-8 sm:p-12 rounded-3xl border border-slate-200/80 shadow-xs text-center max-w-lg mx-auto my-8 space-y-4">
+    <div className="bg-white p-8 sm:p-12 rounded-3xl border border-slate-200/80 shadow-xs text-center max-w-lg mx-auto my-8 space-y-4 animate-fade-in">
       <div className="w-16 h-16 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center mx-auto">
         <ShieldAlert className="w-8 h-8" />
       </div>
       <div>
         <h3 className="text-lg font-black text-slate-900 tracking-tight">Access Restricted</h3>
-        <p className="text-xs text-slate-500 mt-1.5 leading-relaxed">
-          The <strong>{departmentName}</strong> is restricted to authorized <strong>{allowedRole}</strong> personnel. Your current account does not have authorization to access internal operations for this department.
+        <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
+          {description || (
+            <>
+              The <strong>{departmentName}</strong> is restricted to authorized <strong>{allowedRole}</strong> personnel. Your current student account does not have authorization to view internal operations or faculty documents.
+            </>
+          )}
         </p>
       </div>
       <div className="pt-2">
@@ -35,7 +39,7 @@ function RestrictedAccess({ departmentName, allowedRole, onReturn }) {
           onClick={onReturn}
           className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-blue-500/20"
         >
-          Return to My Workspace
+          Return to Student Portal
         </button>
       </div>
     </div>
@@ -51,31 +55,50 @@ function DashboardContent() {
   }
 
   const role = user?.role || 'Guest';
-  const isAdmin = role === 'Admin';
-  const myWorkspace = role === 'Faculty' ? 'faculty-portal' : (role === 'Student' ? 'student-portal' : (role === 'Cleaning' ? 'cleaning' : (role === 'HR' ? 'hr' : 'home')));
+  const isStudent = role === 'Student';
 
   // Active page router with Role-Based Access Control
+  // Rule: Everyone other than Student has full access to all campus modules and management areas.
+  // Only Students are restricted from staff, HR, management, and faculty operations/documents.
   switch (activeTab) {
     case 'home':
       return <HomePage />;
     case 'student-portal':
-      if (!isAdmin && role !== 'Student') {
-        return <RestrictedAccess departmentName="Student Portal" allowedRole="Enrolled Students" onReturn={() => navigate(myWorkspace)} />;
-      }
       return <StudentPortalPage />;
     case 'cleaning':
-      if (!isAdmin && role !== 'Cleaning') {
-        return <RestrictedAccess departmentName="Cleaning Department" allowedRole="Sanitation Staff" onReturn={() => navigate(myWorkspace)} />;
+      if (isStudent) {
+        return (
+          <RestrictedAccess
+            departmentName="Cleaning & Facilities Department"
+            allowedRole="Campus Staff & Faculty"
+            description="Sanitation dispatch rosters, maintenance work orders, and cleaning operations are restricted from students. Students can report sanitation issues via the Student Portal."
+            onReturn={() => navigate('student-portal')}
+          />
+        );
       }
       return <CleaningDepartmentPage />;
     case 'management':
-      if (!isAdmin) {
-        return <RestrictedAccess departmentName="Management Department" allowedRole="Executive Management & Administrators" onReturn={() => navigate(myWorkspace)} />;
+      if (isStudent) {
+        return (
+          <RestrictedAccess
+            departmentName="Management & Administration Department"
+            allowedRole="Executive Management & Faculty Staff"
+            description="Institutional oversight, executive operations, college budgets, and administrative performance data are restricted from student access."
+            onReturn={() => navigate('student-portal')}
+          />
+        );
       }
       return <ManagementDepartmentPage />;
     case 'hr':
-      if (!isAdmin && role !== 'HR') {
-        return <RestrictedAccess departmentName="HR Department" allowedRole="Human Resources Officers" onReturn={() => navigate(myWorkspace)} />;
+      if (isStudent) {
+        return (
+          <RestrictedAccess
+            departmentName="Human Resources Department"
+            allowedRole="HR Officers & Campus Staff"
+            description="Staff credentials, official faculty attendance records, employee salary structures, and official leave authorizations are confidential and restricted from students."
+            onReturn={() => navigate('student-portal')}
+          />
+        );
       }
       return <HRDepartmentPage />;
     case 'counselling':
@@ -83,8 +106,15 @@ function DashboardContent() {
     case 'student-leader':
       return <StudentLeaderPage />;
     case 'faculty-portal':
-      if (!isAdmin && role !== 'Faculty') {
-        return <RestrictedAccess departmentName="Faculty Portal" allowedRole="Faculty & Instructors" onReturn={() => navigate(myWorkspace)} />;
+      if (isStudent) {
+        return (
+          <RestrictedAccess
+            departmentName="Faculty Portal & Documents"
+            allowedRole="Faculty & Academic Staff"
+            description="Confidential faculty examination documents, grading books, course curriculum management, and student evaluation rosters are strictly restricted from student access."
+            onReturn={() => navigate('student-portal')}
+          />
+        );
       }
       return <FacultyPortalPage />;
     case 'notifications':

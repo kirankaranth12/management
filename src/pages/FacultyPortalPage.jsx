@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  BookOpenCheck, 
-  Calendar, 
-  Clock, 
-  CheckCircle2, 
-  AlertCircle, 
-  Users, 
-  Save, 
-  Plus, 
-  Megaphone, 
-  FileText, 
-  Check, 
-  UserCheck, 
+import {
+  BookOpenCheck,
+  Calendar,
+  Clock,
+  CheckCircle2,
+  AlertCircle,
+  Users,
+  Save,
+  Plus,
+  Megaphone,
+  FileText,
+  Check,
+  UserCheck,
   Building,
   GraduationCap,
   Sparkles,
@@ -23,25 +23,25 @@ import { useApp } from '../context/AppContext';
 import Avatar from '../components/Avatar';
 
 export default function FacultyPortalPage() {
-  const { 
-    user, 
-    studentAcademics, 
-    saveStudentAttendance, 
+  const {
+    user,
+    studentAcademics,
+    saveStudentAttendance,
     saveStudentMarks,
     gradeAssignment,
-    complaints, 
-    updateComplaintStatus, 
-    announcements, 
-    publishAnnouncement, 
-    showToast 
+    complaints,
+    updateComplaintStatus,
+    announcements,
+    publishAnnouncement,
+    showToast
   } = useApp();
 
   const [activeTab, setActiveTab] = useState('grades'); // 'grades' | 'attendance' | 'assignments' | 'complaints' | 'timetable' | 'profile'
-  
+
   // ==================== ATTENDANCE STATE ====================
   const [selectedCourse, setSelectedCourse] = useState('CS-301');
   const [attendanceDate, setAttendanceDate] = useState('2026-11-22');
-  
+
   // Interactive Roster for Attendance
   const [roster, setRoster] = useState([
     { id: 'STU-001', name: 'Student 1', rollNo: 'STU-001', status: 'Present' },
@@ -153,7 +153,7 @@ export default function FacultyPortalPage() {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      
+
       {/* Header Banner */}
       <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
@@ -204,9 +204,8 @@ export default function FacultyPortalPage() {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`px-4 py-2 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 ${
-              activeTab === tab.id ? 'bg-white text-emerald-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
-            }`}
+            className={`px-4 py-2 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 ${activeTab === tab.id ? 'bg-white text-emerald-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
+              }`}
           >
             {tab.highlight && <Sparkles className="w-3.5 h-3.5 text-amber-500" />}
             {tab.label}
@@ -274,7 +273,7 @@ export default function FacultyPortalPage() {
                     <td className="p-3 font-mono font-bold text-slate-800">{item.rollNo}</td>
                     <td className="p-3 font-bold text-slate-900">{item.studentName}</td>
                     <td className="p-3 text-slate-500 font-mono">{item.studentId}</td>
-                    
+
                     {/* Internal Marks Input */}
                     <td className="p-3 text-center">
                       <input
@@ -308,15 +307,14 @@ export default function FacultyPortalPage() {
 
                     {/* Grade Pill */}
                     <td className="p-3 text-center">
-                      <span className={`px-2.5 py-1 rounded-md font-extrabold text-xs ${
-                        item.grade === 'A+' || item.grade === 'A' 
-                          ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' 
-                          : item.grade === 'A-' || item.grade === 'B+' 
+                      <span className={`px-2.5 py-1 rounded-md font-extrabold text-xs ${item.grade === 'A+' || item.grade === 'A'
+                        ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                        : item.grade === 'A-' || item.grade === 'B+'
                           ? 'bg-blue-100 text-blue-800 border border-blue-200'
                           : item.grade === 'B' || item.grade === 'C'
-                          ? 'bg-amber-100 text-amber-800 border border-amber-200'
-                          : 'bg-rose-100 text-rose-800 border border-rose-200'
-                      }`}>
+                            ? 'bg-amber-100 text-amber-800 border border-amber-200'
+                            : 'bg-rose-100 text-rose-800 border border-rose-200'
+                        }`}>
                         {item.grade}
                       </span>
                     </td>
@@ -410,9 +408,8 @@ export default function FacultyPortalPage() {
                     <td className="p-3.5 font-bold text-slate-900">{student.name}</td>
                     <td className="p-3.5 text-slate-500 font-mono">{student.id}</td>
                     <td className="p-3.5">
-                      <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full font-bold text-xs ${
-                        student.status === 'Present' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
-                      }`}>
+                      <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full font-bold text-xs ${student.status === 'Present' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
+                        }`}>
                         <span className={`w-1.5 h-1.5 rounded-full ${student.status === 'Present' ? 'bg-emerald-600' : 'bg-rose-600'}`} />
                         {student.status}
                       </span>
@@ -463,7 +460,7 @@ export default function FacultyPortalPage() {
 
                 <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
                   <span className="font-bold text-slate-700">Submissions: {asn.submissions}</span>
-                  <button 
+                  <button
                     onClick={() => {
                       setSelectedAsn(asn);
                       setEvalModalOpen(true);
@@ -662,9 +659,8 @@ export default function FacultyPortalPage() {
                   </div>
 
                   <div className="flex flex-col gap-2 shrink-0 sm:items-end">
-                    <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
-                      c.status === 'Resolved' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
-                    }`}>
+                    <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${c.status === 'Resolved' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+                      }`}>
                       {c.status}
                     </span>
 
@@ -689,7 +685,7 @@ export default function FacultyPortalPage() {
       {activeTab === 'timetable' && (
         <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
           <h3 className="text-base font-black text-slate-900">Faculty Weekly Teaching Timetable</h3>
-          
+
           <div className="space-y-3">
             {facultyTimetable.map((slot, index) => (
               <div key={index} className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between">

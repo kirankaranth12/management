@@ -73,7 +73,7 @@ export default function StudentCounsellingPage() {
     setChatInput('');
   };
 
-  const isCounsellor = user?.role === 'Counselling' || user?.role === 'Admin';
+  const isCounsellor = user?.role !== 'Student';
 
   const myAppointments = isCounsellor
     ? counsellingAppointments

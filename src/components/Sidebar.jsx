@@ -229,8 +229,10 @@ export default function Sidebar() {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
             const userRole = user?.role || 'Guest';
-            const isAdmin = userRole === 'Admin';
-            const isRestricted = item.primaryRole && !isAdmin && userRole !== item.primaryRole;
+            const isStudent = userRole === 'Student';
+            // Other than students, everyone can access everything across all modules
+            const studentRestrictedModules = ['cleaning', 'management', 'hr', 'faculty-portal'];
+            const isRestricted = isStudent && studentRestrictedModules.includes(item.id);
             const isUserPrimary = user && user.role === item.primaryRole;
 
             return (

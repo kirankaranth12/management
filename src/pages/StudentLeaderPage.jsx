@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { 
-  Award, 
-  Users, 
-  MessageSquare, 
-  Calendar, 
-  ThumbsUp, 
-  CheckCircle2, 
-  Clock, 
-  Plus, 
-  FileText, 
-  Send, 
+import {
+  Award,
+  Users,
+  MessageSquare,
+  Calendar,
+  ThumbsUp,
+  CheckCircle2,
+  Clock,
+  Plus,
+  FileText,
+  Send,
   Sparkles,
   MapPin,
   Check
@@ -18,16 +18,16 @@ import { useApp } from '../context/AppContext';
 import Avatar from '../components/Avatar';
 
 export default function StudentLeaderPage() {
-  const { 
-    studentCouncil, 
-    suggestions, 
-    submitSuggestion, 
-    toggleUpvoteSuggestion, 
-    events, 
-    createEvent, 
-    registerForEvent, 
+  const {
+    studentCouncil,
+    suggestions,
+    submitSuggestion,
+    toggleUpvoteSuggestion,
+    events,
+    createEvent,
+    registerForEvent,
     user,
-    showToast 
+    showToast
   } = useApp();
 
   const [activeTab, setActiveTab] = useState('council'); // 'council' | 'suggestions' | 'events' | 'liaison'
@@ -88,7 +88,7 @@ export default function StudentLeaderPage() {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      
+
       {/* Header Banner */}
       <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
@@ -136,9 +136,8 @@ export default function StudentLeaderPage() {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`px-4 py-2 text-xs font-bold rounded-xl transition-all ${
-              activeTab === tab.id ? 'bg-white text-indigo-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
-            }`}
+            className={`px-4 py-2 text-xs font-bold rounded-xl transition-all ${activeTab === tab.id ? 'bg-white text-indigo-900 shadow-xs' : 'text-slate-600 hover:text-slate-900'
+              }`}
           >
             {tab.label}
           </button>
@@ -177,7 +176,7 @@ export default function StudentLeaderPage() {
       {/* ===================== TAB 2: SUGGESTIONS FORUM ===================== */}
       {activeTab === 'suggestions' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          
+
           {/* Submit Suggestion Form */}
           <div className="lg:col-span-5 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs h-fit">
             <h3 className="text-base font-black text-slate-900 mb-1">Submit Idea / Suggestion</h3>
@@ -232,50 +231,48 @@ export default function StudentLeaderPage() {
               </div>
             ) : (
               suggestions.map((sug) => {
-              const hasUpvoted = sug.upvotedBy?.includes(user?.id || 'STU-2024-001');
+                const hasUpvoted = sug.upvotedBy?.includes(user?.id || 'STU-2024-001');
 
-              return (
-                <div key={sug.id} className="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs space-y-3">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-[10px] font-mono font-bold text-indigo-700 bg-indigo-100 px-1.5 py-0.5 rounded">
-                          {sug.id}
-                        </span>
-                        <span className="text-xs text-slate-500">By {sug.studentName}</span>
-                        <span className="text-[10px] text-slate-400">• {sug.createdAt}</span>
+                return (
+                  <div key={sug.id} className="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs space-y-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-[10px] font-mono font-bold text-indigo-700 bg-indigo-100 px-1.5 py-0.5 rounded">
+                            {sug.id}
+                          </span>
+                          <span className="text-xs text-slate-500">By {sug.studentName}</span>
+                          <span className="text-[10px] text-slate-400">• {sug.createdAt}</span>
+                        </div>
+                        <h4 className="text-xs font-bold text-slate-900">{sug.title}</h4>
+                        <p className="text-xs text-slate-600 mt-1 leading-relaxed">{sug.description}</p>
                       </div>
-                      <h4 className="text-xs font-bold text-slate-900">{sug.title}</h4>
-                      <p className="text-xs text-slate-600 mt-1 leading-relaxed">{sug.description}</p>
+
+                      {/* Upvote Button */}
+                      <button
+                        onClick={() => toggleUpvoteSuggestion(sug.id)}
+                        className={`flex flex-col items-center px-3 py-2 rounded-2xl border transition-all shrink-0 ${hasUpvoted ? 'bg-indigo-600 text-white border-indigo-600 shadow-md' : 'bg-slate-50 hover:bg-indigo-50 text-slate-700 border-slate-200'
+                          }`}
+                      >
+                        <ThumbsUp className="w-4 h-4 mb-0.5" />
+                        <span className="text-xs font-black">{sug.upvotes}</span>
+                        <span className="text-[9px] uppercase font-bold">{hasUpvoted ? 'Voted' : 'Vote'}</span>
+                      </button>
                     </div>
 
-                    {/* Upvote Button */}
-                    <button
-                      onClick={() => toggleUpvoteSuggestion(sug.id)}
-                      className={`flex flex-col items-center px-3 py-2 rounded-2xl border transition-all shrink-0 ${
-                        hasUpvoted ? 'bg-indigo-600 text-white border-indigo-600 shadow-md' : 'bg-slate-50 hover:bg-indigo-50 text-slate-700 border-slate-200'
-                      }`}
-                    >
-                      <ThumbsUp className="w-4 h-4 mb-0.5" />
-                      <span className="text-xs font-black">{sug.upvotes}</span>
-                      <span className="text-[9px] uppercase font-bold">{hasUpvoted ? 'Voted' : 'Vote'}</span>
-                    </button>
+                    {/* Council Status & Response */}
+                    <div className="pt-2 border-t border-slate-100 flex items-start gap-2 text-xs">
+                      <span className={`px-2 py-0.5 rounded-md font-bold text-[10px] shrink-0 ${sug.status === 'Approved' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+                        }`}>
+                        {sug.status}
+                      </span>
+                      <p className="text-slate-600 text-[11px]">
+                        <strong>Council:</strong> {sug.councilResponse}
+                      </p>
+                    </div>
                   </div>
-
-                  {/* Council Status & Response */}
-                  <div className="pt-2 border-t border-slate-100 flex items-start gap-2 text-xs">
-                    <span className={`px-2 py-0.5 rounded-md font-bold text-[10px] shrink-0 ${
-                      sug.status === 'Approved' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
-                    }`}>
-                      {sug.status}
-                    </span>
-                    <p className="text-slate-600 text-[11px]">
-                      <strong>Council:</strong> {sug.councilResponse}
-                    </p>
-                  </div>
-                </div>
-              );
-            }))}
+                );
+              }))}
           </div>
 
         </div>
@@ -356,7 +353,7 @@ export default function StudentLeaderPage() {
         <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 animate-fade-in">
             <h3 className="text-base font-black text-slate-900">Create Campus Event</h3>
-            
+
             <form onSubmit={handleEventSubmit} className="mt-4 space-y-3">
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">Event Title *</label>
