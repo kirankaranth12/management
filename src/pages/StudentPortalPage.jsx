@@ -400,13 +400,15 @@ export default function StudentPortalPage() {
                 </p>
               </div>
               <div className="flex items-center gap-3">
-                <div className="px-4 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-center">
+                <div className={`px-4 py-2 rounded-xl border text-center ${(user?.attendance || 0) >= 75 ? 'bg-emerald-50 border-emerald-200 text-emerald-900' : 'bg-slate-50 border-slate-200 text-slate-800'}`}>
                   <span className="text-[10px] font-bold uppercase">Aggregate</span>
                   <p className="text-lg font-black">{user?.attendance || 0}%</p>
                 </div>
-                <div className="px-4 py-2 rounded-xl bg-blue-50 border border-blue-200 text-blue-900 text-center">
+                <div className="px-4 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 text-center">
                   <span className="text-[10px] font-bold uppercase">Status</span>
-                  <p className="text-xs font-bold text-emerald-700 mt-1">Eligible for Exams</p>
+                  <p className={`text-xs font-bold mt-1 ${(user?.attendance || 0) >= 75 ? 'text-emerald-700' : ((user?.attendance || 0) > 0 ? 'text-rose-600' : 'text-slate-500')}`}>
+                    {(user?.attendance || 0) >= 75 ? 'Eligible for Exams' : ((user?.attendance || 0) > 0 ? 'Attendance Warning (<75%)' : 'Awaiting Faculty Attendance')}
+                  </p>
                 </div>
               </div>
             </div>

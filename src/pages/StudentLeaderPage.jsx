@@ -147,29 +147,36 @@ export default function StudentLeaderPage() {
       {/* ===================== TAB 1: REPRESENTATIVES DIRECTORY ===================== */}
       {activeTab === 'council' && (
         <div className="space-y-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {studentCouncil.map((rep) => (
-              <div key={rep.id} className="bg-white rounded-3xl border border-slate-200/80 p-5 shadow-xs flex flex-col justify-between">
-                <div>
-                  <Avatar
-                    src={rep.avatar}
-                    name={rep.name}
-                    className="w-16 h-16 mb-3"
-                    textClassName="text-base"
-                  />
-                  <h4 className="text-sm font-bold text-slate-900">{rep.name}</h4>
-                  <p className="text-xs font-bold text-indigo-700 mt-0.5">{rep.role}</p>
-                  <p className="text-[11px] text-slate-500 mt-1">{rep.department}</p>
-                  <p className="text-xs text-slate-600 mt-2 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
-                    Focus: {rep.focusArea}
-                  </p>
+          {studentCouncil.length === 0 ? (
+            <div className="py-12 px-6 text-center bg-white rounded-3xl border border-slate-200/80 text-slate-500 text-xs">
+              <p className="font-bold text-slate-700 text-sm">No Student Council Representatives Yet</p>
+              <p className="mt-1">Elected or registered student representatives will appear in this council directory.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {studentCouncil.map((rep) => (
+                <div key={rep.id} className="bg-white rounded-3xl border border-slate-200/80 p-5 shadow-xs flex flex-col justify-between">
+                  <div>
+                    <Avatar
+                      src={rep.avatar}
+                      name={rep.name}
+                      className="w-16 h-16 mb-3"
+                      textClassName="text-base"
+                    />
+                    <h4 className="text-sm font-bold text-slate-900">{rep.name}</h4>
+                    <p className="text-xs font-bold text-indigo-700 mt-0.5">{rep.role}</p>
+                    <p className="text-[11px] text-slate-500 mt-1">{rep.department}</p>
+                    <p className="text-xs text-slate-600 mt-2 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                      Focus: {rep.focusArea}
+                    </p>
+                  </div>
+                  <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] text-slate-400">
+                    Term: {rep.term} • {rep.email}
+                  </div>
                 </div>
-                <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] text-slate-400">
-                  Term: {rep.term} • {rep.email}
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 

@@ -72,6 +72,15 @@ function fallbackHandler(endpoint, options = {}) {
       joinedDate: 'November 2026'
     };
     db.users.push(newUser);
+    if (newUser.role === 'Student') {
+      if (!db.academicData.studentRoster) db.academicData.studentRoster = [];
+      db.academicData.studentRoster.push({
+        id: newUser.id,
+        name: newUser.name,
+        rollNo: newUser.rollNo || newUser.id,
+        status: 'Present'
+      });
+    }
     if (newUser.role !== 'Student') {
       db.hrEmployees.push({
         id: newUser.employeeCode || newUser.id,
@@ -108,6 +117,12 @@ function fallbackHandler(endpoint, options = {}) {
   if (endpoint === '/auth/forgot-password' && method === 'POST') {
     const temp = `Campus@${Math.floor(1000 + Math.random() * 9000)}`;
     return { success: true, message: `Reset link sent! Temporary password: ${temp}`, tempPassword: temp };
+  }
+
+  // Auth Users
+  if (endpoint === '/auth/users' && method === 'GET') {
+    const safeUsers = (db.users || []).map(({ password, ...u }) => u);
+    return { success: true, users: safeUsers };
   }
 
   // Complaints GET
@@ -346,25 +361,42 @@ function fallbackHandler(endpoint, options = {}) {
 
   // Academics
   if (endpoint.startsWith('/academics/student/') && method === 'GET') {
+    const id = endpoint.split('/')[3];
+    const courseMarks = db.academicData.courseMarks || {};
+    const studentCourses = (db.academicData.studentCourses || []).map(c => {
+      const marksForCourse = courseMarks[c.code];
+      if (Array.isArray(marksForCourse)) {
+        const studentMark = marksForCourse.find(m => m.studentId === id || m.rollNo === id);
+        if (studentMark) {
+          return {
+            ...c,
+            marks: `${studentMark.totalMarks || 0}/100`,
+            grade: studentMark.grade || '-'
+          };
+        }
+      }
+      return c;
+    });
+
     return {
       success: true,
-      courses: db.academicData.studentCourses,
-      timetable: db.academicData.timetable,
-      studentRoster: db.academicData.studentRoster,
-      courseMarks: db.academicData.courseMarks || {}
+      courses: studentCourses,
+      timetable: db.academicData.timetable || [],
+      studentRoster: db.academicData.studentRoster || [],
+      courseMarks
     };
   }
   if (endpoint === '/academics/marks' && method === 'POST') {
     if (!db.academicData.courseMarks) db.academicData.courseMarks = {};
     db.academicData.courseMarks[body.courseCode] = body.studentMarks;
     const targetCourse = db.academicData.studentCourses.find(c => c.code === body.courseCode);
-    const alexMark = body.studentMarks.find(m => m.studentId === 'STU-2024-001');
-    if (targetCourse && alexMark) {
-      targetCourse.marks = `${alexMark.totalMarks || (Number(alexMark.internalMarks || 0) + Number(alexMark.examMarks || 0))}/100`;
-      targetCourse.grade = alexMark.grade;
-      const u = db.users.find(x => x.id === 'STU-2024-001');
-      if (u) {
-        u.cgpa = "3.90";
+    const primaryMark = body.studentMarks[0];
+    if (targetCourse && primaryMark) {
+      targetCourse.marks = `${primaryMark.totalMarks || (Number(primaryMark.internalMarks || 0) + Number(primaryMark.examMarks || 0))}/100`;
+      targetCourse.grade = primaryMark.grade;
+      const targetUser = db.users.find(x => x.id === primaryMark.studentId || x.rollNo === primaryMark.rollNo);
+      if (targetUser) {
+        targetUser.cgpa = primaryMark.grade === 'A+' ? '4.00' : (primaryMark.grade === 'A' ? '3.80' : '3.50');
       }
     }
     saveLocalDB(db);

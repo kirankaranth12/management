@@ -109,6 +109,17 @@ app.post('/api/auth/register', (req, res) => {
 
   db.data.users.push(newUser);
 
+  // If student, also register in academic roster for attendance & grading
+  if (newUser.role === 'Student') {
+    if (!db.data.academicData.studentRoster) db.data.academicData.studentRoster = [];
+    db.data.academicData.studentRoster.push({
+      id: newUser.id,
+      name: newUser.name,
+      rollNo: newUser.rollNo || newUser.id,
+      status: 'Present'
+    });
+  }
+
   // If faculty or staff, also add to HR employees
   if (newUser.role !== 'Student') {
     db.data.hrEmployees.push({
@@ -1043,12 +1054,28 @@ app.post('/api/leaders/events/:id/register', (req, res) => {
 // Student courses & attendance & marks
 app.get('/api/academics/student/:id', (req, res) => {
   const { id } = req.params;
+  const courseMarks = db.data.academicData.courseMarks || {};
+  const studentCourses = (db.data.academicData.studentCourses || []).map(c => {
+    const marksForCourse = courseMarks[c.code];
+    if (Array.isArray(marksForCourse)) {
+      const studentMark = marksForCourse.find(m => m.studentId === id || m.rollNo === id);
+      if (studentMark) {
+        return {
+          ...c,
+          marks: `${studentMark.totalMarks || 0}/100`,
+          grade: studentMark.grade || '-'
+        };
+      }
+    }
+    return c;
+  });
+
   res.json({
     success: true,
-    courses: db.data.academicData.studentCourses,
-    timetable: db.data.academicData.timetable,
-    studentRoster: db.data.academicData.studentRoster,
-    courseMarks: db.data.academicData.courseMarks || {}
+    courses: studentCourses,
+    timetable: db.data.academicData.timetable || [],
+    studentRoster: db.data.academicData.studentRoster || [],
+    courseMarks
   });
 });
 

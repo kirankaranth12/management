@@ -55,7 +55,6 @@ export default function Navbar() {
   }, []);
 
   const demoAccounts = [
-    { name: 'Student Member', role: 'Student', id: 'STU-001', pass: 'password123', desc: 'Student Workspace' },
     { name: 'Faculty Member', role: 'Faculty', id: 'FAC-001', pass: 'password123', desc: 'Faculty Workspace' },
     { name: 'Administrator', role: 'Admin', id: 'ADM-001', pass: 'password123', desc: 'Administration Workspace' },
     { name: 'Sanitation Staff', role: 'Cleaning', id: 'CLN-001', pass: 'password123', desc: 'Sanitation Workspace' },

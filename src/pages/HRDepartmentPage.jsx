@@ -142,9 +142,7 @@ export default function HRDepartmentPage() {
         </div>
         <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
           <span className="text-xs font-bold text-purple-700 uppercase">Appraisal Index</span>
-          <p className="text-2xl font-black text-purple-600 mt-1">
-            {hrEmployees.length > 0 ? '4.8 / 5.0' : '0.0 / 5.0'}
-          </p>
+          <p className="text-2xl font-black text-purple-600 mt-1">0.0 / 5.0</p>
           <p className="text-[11px] text-slate-400 mt-0.5">Faculty satisfaction score</p>
         </div>
       </div>

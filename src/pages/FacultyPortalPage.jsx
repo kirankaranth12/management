@@ -33,6 +33,7 @@ export default function FacultyPortalPage() {
     updateComplaintStatus,
     announcements,
     publishAnnouncement,
+    registeredStudents,
     showToast
   } = useApp();
 
@@ -40,30 +41,51 @@ export default function FacultyPortalPage() {
 
   // ==================== ATTENDANCE STATE ====================
   const [selectedCourse, setSelectedCourse] = useState('CS-301');
-  const [attendanceDate, setAttendanceDate] = useState('2026-11-22');
+  const [attendanceDate, setAttendanceDate] = useState(() => new Date().toISOString().split('T')[0]);
 
-  // Interactive Roster for Attendance
-  const [roster, setRoster] = useState([
-    { id: 'STU-001', name: 'Student 1', rollNo: 'STU-001', status: 'Present' },
-    { id: 'STU-002', name: 'Student 2', rollNo: 'STU-002', status: 'Present' },
-    { id: 'STU-003', name: 'Student 3', rollNo: 'STU-003', status: 'Present' }
-  ]);
+  // Interactive Roster for Attendance (Real registered students only)
+  const [roster, setRoster] = useState([]);
+
+  useEffect(() => {
+    if (registeredStudents && registeredStudents.length > 0) {
+      setRoster(registeredStudents.map(s => ({
+        id: s.id,
+        name: s.name,
+        rollNo: s.rollNo || s.id,
+        status: 'Present'
+      })));
+    } else {
+      setRoster([]);
+    }
+  }, [registeredStudents]);
 
   // ==================== MARKS & GRADING STATE ====================
   const [gradingCourse, setGradingCourse] = useState('CS-301');
-  const [marksRoster, setMarksRoster] = useState([
-    { studentId: 'STU-001', studentName: 'Student 1', rollNo: 'STU-001', internalMarks: 0, examMarks: 0, totalMarks: 0, maxMarks: 100, grade: '-', remarks: '' },
-    { studentId: 'STU-002', studentName: 'Student 2', rollNo: 'STU-002', internalMarks: 0, examMarks: 0, totalMarks: 0, maxMarks: 100, grade: '-', remarks: '' },
-    { studentId: 'STU-003', studentName: 'Student 3', rollNo: 'STU-003', internalMarks: 0, examMarks: 0, totalMarks: 0, maxMarks: 100, grade: '-', remarks: '' }
-  ]);
+  const [marksRoster, setMarksRoster] = useState([]);
   const [isSavingMarks, setIsSavingMarks] = useState(false);
 
-  // Sync marks from backend if present
+  // Sync marks from backend or real registered students
   useEffect(() => {
-    if (studentAcademics?.courseMarks && studentAcademics.courseMarks[gradingCourse]) {
-      setMarksRoster(studentAcademics.courseMarks[gradingCourse]);
+    if (registeredStudents && registeredStudents.length > 0) {
+      const savedCourseMarks = studentAcademics?.courseMarks && studentAcademics.courseMarks[gradingCourse];
+      setMarksRoster(registeredStudents.map(s => {
+        const found = Array.isArray(savedCourseMarks) ? savedCourseMarks.find(m => m.studentId === s.id || m.rollNo === s.rollNo) : null;
+        return found || {
+          studentId: s.id,
+          studentName: s.name,
+          rollNo: s.rollNo || s.id,
+          internalMarks: 0,
+          examMarks: 0,
+          totalMarks: 0,
+          maxMarks: 100,
+          grade: '-',
+          remarks: ''
+        };
+      }));
+    } else {
+      setMarksRoster([]);
     }
-  }, [gradingCourse, studentAcademics]);
+  }, [gradingCourse, studentAcademics, registeredStudents]);
 
   // Grade calculator helper
   const calculateGrade = (total) => {
@@ -117,10 +139,12 @@ export default function FacultyPortalPage() {
   const handleGradeSubmission = async (e) => {
     e.preventDefault();
     if (!evalMarks || !selectedAsn) return;
+    const targetStudentId = evalStudent ? evalStudent.split('(')[1]?.replace(')', '').trim() : (registeredStudents[0]?.id || '');
+    const targetStudentName = evalStudent ? evalStudent.split('(')[0]?.trim() : (registeredStudents[0]?.name || 'Student');
     await gradeAssignment(
       selectedAsn.id,
-      evalStudent ? evalStudent.split('(')[1]?.replace(')', '') || 'STU-001' : 'STU-001',
-      evalStudent ? evalStudent.split('(')[0]?.trim() || 'Student Member' : 'Student Member',
+      targetStudentId,
+      targetStudentName,
       evalMarks,
       selectedAsn.maxMarks,
       evalFeedback
@@ -253,26 +277,32 @@ export default function FacultyPortalPage() {
           </div>
 
           {/* Interactive Marks Table */}
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 text-slate-600 font-bold border-b border-slate-200">
-                <tr>
-                  <th className="p-3">Roll No</th>
-                  <th className="p-3">Student Name</th>
-                  <th className="p-3">Student ID</th>
-                  <th className="p-3 text-center">Internal (Max 30)</th>
-                  <th className="p-3 text-center">Exam (Max 70)</th>
-                  <th className="p-3 text-center">Total / 100</th>
-                  <th className="p-3 text-center">Grade Awarded</th>
-                  <th className="p-3">Faculty Remarks / Comments</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {marksRoster.map((item) => (
-                  <tr key={item.studentId} className="hover:bg-slate-50/70 transition-colors">
-                    <td className="p-3 font-mono font-bold text-slate-800">{item.rollNo}</td>
-                    <td className="p-3 font-bold text-slate-900">{item.studentName}</td>
-                    <td className="p-3 text-slate-500 font-mono">{item.studentId}</td>
+          {marksRoster.length === 0 ? (
+            <div className="py-12 px-6 text-center bg-slate-50 rounded-2xl border border-slate-200 text-slate-500 text-xs">
+              <p className="font-bold text-slate-700 text-sm">No Registered Students in Class</p>
+              <p className="mt-1">Only real students who have registered an account will appear here for grading and course assessments.</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-slate-50 text-slate-600 font-bold border-b border-slate-200">
+                  <tr>
+                    <th className="p-3">Roll No</th>
+                    <th className="p-3">Student Name</th>
+                    <th className="p-3">Student ID</th>
+                    <th className="p-3 text-center">Internal (Max 30)</th>
+                    <th className="p-3 text-center">Exam (Max 70)</th>
+                    <th className="p-3 text-center">Total / 100</th>
+                    <th className="p-3 text-center">Grade Awarded</th>
+                    <th className="p-3">Faculty Remarks / Comments</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {marksRoster.map((item) => (
+                    <tr key={item.studentId} className="hover:bg-slate-50/70 transition-colors">
+                      <td className="p-3 font-mono font-bold text-slate-800">{item.rollNo}</td>
+                      <td className="p-3 font-bold text-slate-900">{item.studentName}</td>
+                      <td className="p-3 text-slate-500 font-mono">{item.studentId}</td>
 
                     {/* Internal Marks Input */}
                     <td className="p-3 text-center">
@@ -334,6 +364,7 @@ export default function FacultyPortalPage() {
               </tbody>
             </table>
           </div>
+          )}
 
           <div className="p-4 bg-emerald-50/70 border border-emerald-200 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-emerald-950 font-medium">
             <span>
@@ -390,7 +421,13 @@ export default function FacultyPortalPage() {
           </div>
 
           {/* Student Roster Table */}
-          <div className="overflow-x-auto">
+          {roster.length === 0 ? (
+            <div className="py-12 px-6 text-center bg-slate-50 rounded-2xl border border-slate-200 text-slate-500 text-xs">
+              <p className="font-bold text-slate-700 text-sm">No Registered Students in Class</p>
+              <p className="mt-1">Only real students who have registered an account will appear here for class attendance.</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-50 text-slate-600 font-bold border-b border-slate-200">
                 <tr>
@@ -427,6 +464,7 @@ export default function FacultyPortalPage() {
               </tbody>
             </table>
           </div>
+          )}
         </div>
       )}
 
@@ -490,9 +528,13 @@ export default function FacultyPortalPage() {
                       onChange={(e) => setEvalStudent(e.target.value)}
                       className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl font-bold"
                     >
-                      {roster.map(s => (
-                        <option key={s.id} value={`${s.name} (${s.id})`}>{s.name} ({s.id})</option>
-                      ))}
+                      {roster.length === 0 ? (
+                        <option value="">No registered students found</option>
+                      ) : (
+                        roster.map(s => (
+                          <option key={s.id} value={`${s.name} (${s.id})`}>{s.name} ({s.rollNo || s.id})</option>
+                        ))
+                      )}
                     </select>
                   </div>
 

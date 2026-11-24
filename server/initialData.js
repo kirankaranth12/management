@@ -4,22 +4,6 @@ export const initialData = {
   // Generic role baseline template accounts so authentication and role exploration work seamlessly
   users: [
     {
-      id: "STU-001",
-      name: "Student Member",
-      email: "student@campusconnect.edu",
-      password: "password123",
-      role: "Student",
-      department: "Computer Science & Engineering",
-      semester: "1st Semester",
-      rollNo: "STU-001",
-      phone: "+1 (555) 000-0001",
-      avatar: "",
-      cgpa: "0.00",
-      attendance: 0,
-      bio: "Registered campus student.",
-      joinedDate: "Fall 2026"
-    },
-    {
       id: "FAC-001",
       name: "Faculty Member",
       email: "faculty@campusconnect.edu",

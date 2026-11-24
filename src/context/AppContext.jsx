@@ -44,6 +44,7 @@ export function AppProvider({ children }) {
   const [managementStats, setManagementStats] = useState(null);
   const [departments, setDepartments] = useState([]);
   const [studentAcademics, setStudentAcademics] = useState(null);
+  const [allUsers, setAllUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   // Show Toast helper
@@ -101,7 +102,8 @@ export function AppProvider({ children }) {
         api.getManagementStats(),
         api.getDepartments(),
         api.getNotifications(user ? user.id : 'all'),
-        api.getStudentAcademics(user ? user.id : 'STU-2024-001')
+        api.getStudentAcademics(user ? user.id : 'all'),
+        api.getUsers()
       ]);
 
       if (cmpRes.success) setComplaints(cmpRes.complaints || []);
@@ -118,6 +120,7 @@ export function AppProvider({ children }) {
       if (mgmtDeptsRes.success) setDepartments(mgmtDeptsRes.departments || []);
       if (notifRes.success) setNotifications(notifRes.notifications || []);
       if (acadRes.success) setStudentAcademics(acadRes);
+      if (usersRes && usersRes.success) setAllUsers(usersRes.users || []);
     } catch (e) {
       console.error('Error refreshing data:', e);
     } finally {
@@ -513,6 +516,11 @@ export function AppProvider({ children }) {
   // Unread count
   const unreadNotifsCount = notifications.filter(n => !n.read).length;
 
+  // Real registered users categorized by role
+  const registeredStudents = allUsers.filter(u => u.role === 'Student');
+  const registeredFaculty = allUsers.filter(u => u.role === 'Faculty');
+  const registeredStaff = allUsers.filter(u => !['Student', 'Faculty'].includes(u.role));
+
   return (
     <AppContext.Provider
       value={{
@@ -573,6 +581,10 @@ export function AppProvider({ children }) {
         markAllNotificationsRead,
         refreshAllData,
         resetToDemo,
+        allUsers,
+        registeredStudents,
+        registeredFaculty,
+        registeredStaff,
         isLoading
       }}
     >

@@ -27,6 +27,9 @@ export default function ManagementDepartmentPage() {
     announcements,
     publishAnnouncement,
     cleaningTasks,
+    registeredStudents,
+    registeredFaculty,
+    registeredStaff,
     user,
     showToast
   } = useApp();
@@ -84,13 +87,23 @@ export default function ManagementDepartmentPage() {
     return matchesDept && matchesStatus && matchesSearch;
   });
 
-  const stats = managementStats || {
-    totalStudents: 0,
-    totalFaculty: 0,
-    totalStaff: 0,
-    totalComplaints: complaints.length,
-    resolvedComplaints: complaints.filter(c => c.status === 'Resolved').length,
-    resolutionRate: complaints.length > 0 ? Math.round((complaints.filter(c => c.status === 'Resolved').length / complaints.length) * 100) : 0
+  const totalStudents = registeredStudents?.length || 0;
+  const totalFaculty = registeredFaculty?.length || 0;
+  const totalStaff = registeredStaff?.length || 0;
+  const totalComplaints = complaints.length;
+  const resolvedComplaints = complaints.filter(c => c.status === 'Resolved').length;
+  const resolutionRate = totalComplaints > 0 ? Math.round((resolvedComplaints / totalComplaints) * 100) : 0;
+  const completedCleaning = cleaningTasks.filter(t => t.status === 'Completed').length;
+  const sanitationScore = cleaningTasks.length > 0 ? Math.round((completedCleaning / cleaningTasks.length) * 100) : 0;
+
+  const stats = {
+    totalStudents,
+    totalFaculty,
+    totalStaff,
+    totalComplaints,
+    resolvedComplaints,
+    resolutionRate,
+    sanitationScore
   };
 
   return (
@@ -207,16 +220,20 @@ export default function ManagementDepartmentPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
-                    {departments.map((dept) => (
-                      <tr key={dept.id} className="hover:bg-slate-50/70 transition-colors">
-                        <td className="p-3 font-bold text-slate-900">{dept.name}</td>
-                        <td className="p-3 text-slate-600">{dept.head}</td>
-                        <td className="p-3 font-semibold">{dept.studentCount || '-'}</td>
-                        <td className="p-3 font-semibold">{dept.facultyCount}</td>
-                        <td className="p-3 font-mono font-bold text-emerald-700">{dept.budget}</td>
-                        <td className="p-3 font-bold text-purple-700">{dept.satisfactionRate}%</td>
-                      </tr>
-                    ))}
+                    {departments.map((dept) => {
+                      const deptStudents = registeredStudents?.filter(s => s.department === dept.name).length || 0;
+                      const deptFaculty = registeredFaculty?.filter(f => f.department === dept.name).length || 0;
+                      return (
+                        <tr key={dept.id} className="hover:bg-slate-50/70 transition-colors">
+                          <td className="p-3 font-bold text-slate-900">{dept.name}</td>
+                          <td className="p-3 text-slate-600">{dept.hod || dept.head || '-'}</td>
+                          <td className="p-3 font-semibold">{deptStudents}</td>
+                          <td className="p-3 font-semibold">{deptFaculty}</td>
+                          <td className="p-3 font-mono font-bold text-emerald-700">{dept.budget || '$0'}</td>
+                          <td className="p-3 font-bold text-purple-700">0%</td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>

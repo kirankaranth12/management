@@ -51,7 +51,6 @@ export default function AuthPage({ initialMode = 'register' }) {
 
   // Quick Demo Accounts
   const demoAccounts = [
-    { label: 'Student Account', id: 'STU-001', pass: 'password123', role: 'Student' },
     { label: 'Faculty Account', id: 'FAC-001', pass: 'password123', role: 'Faculty' },
     { label: 'Admin Account', id: 'ADM-001', pass: 'password123', role: 'Admin' },
     { label: 'Cleaning Staff', id: 'CLN-001', pass: 'password123', role: 'Cleaning' },

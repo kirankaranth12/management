@@ -48,14 +48,14 @@ export default function CleaningDepartmentPage() {
   const [selectedTask, setSelectedTask] = useState(null);
   const [completionNotes, setCompletionNotes] = useState('');
 
-  // Sanitation Staff List (Dynamic from registered staff or generic roster)
+  // Sanitation Staff List (Dynamic from registered staff)
   const sanitationStaff = hrEmployees?.filter(e => e.department === 'Sanitation & Facilities' || e.role === 'Cleaning') || [];
-  const staffMembers = sanitationStaff.length > 0
-    ? sanitationStaff.map(e => ({ name: e.name, role: e.designation || 'Sanitation Lead', shift: 'Day Shift', activeTasks: cleaningTasks.filter(t => t.assignedStaff === e.name && t.status !== 'Completed').length }))
-    : [
-        { name: 'Sanitation Officer 1', role: 'Senior Sanitation Lead', shift: 'Morning Shift', activeTasks: 0 },
-        { name: 'Sanitation Officer 2', role: 'Floor Hygiene Specialist', shift: 'Afternoon Shift', activeTasks: 0 }
-      ];
+  const staffMembers = sanitationStaff.map(e => ({
+    name: e.name,
+    role: e.designation || 'Sanitation Lead',
+    shift: 'Day Shift',
+    activeTasks: cleaningTasks.filter(t => t.assignedStaff === e.name && t.status !== 'Completed').length
+  }));
 
   // Handle photo upload
   const handlePhotoUpload = (e) => {
@@ -604,22 +604,29 @@ export default function CleaningDepartmentPage() {
       {activeTab === 'staff' && (
         <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
           <h3 className="text-base font-black text-slate-900">Sanitation Team Roster & Shifts</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {staffMembers.map((staff, idx) => (
-              <div key={idx} className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between">
-                <div>
-                  <h4 className="text-xs font-bold text-slate-900">{staff.name}</h4>
-                  <p className="text-[11px] text-slate-500">{staff.role}</p>
-                  <span className="text-[10px] text-slate-400 mt-1 block">🕒 {staff.shift}</span>
+          {staffMembers.length === 0 ? (
+            <div className="py-8 px-6 text-center bg-slate-50 rounded-2xl border border-slate-200 text-slate-500 text-xs">
+              <p className="font-bold text-slate-700">No Sanitation Staff Registered Yet</p>
+              <p className="mt-1">Personnel registered under Sanitation & Facilities will automatically appear here.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {staffMembers.map((staff, idx) => (
+                <div key={idx} className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between">
+                  <div>
+                    <h4 className="text-xs font-bold text-slate-900">{staff.name}</h4>
+                    <p className="text-[11px] text-slate-500">{staff.role}</p>
+                    <span className="text-[10px] text-slate-400 mt-1 block">🕒 {staff.shift}</span>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-blue-100 text-blue-800">
+                      {staff.activeTasks} Active Tasks
+                    </span>
+                  </div>
                 </div>
-                <div className="text-right">
-                  <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-blue-100 text-blue-800">
-                    {staff.activeTasks} Active Tasks
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
