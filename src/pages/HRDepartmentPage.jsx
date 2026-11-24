@@ -257,7 +257,14 @@ export default function HRDepartmentPage() {
           </div>
 
           <div className="space-y-4">
-            {leaveRequests.map((leave) => (
+            {leaveRequests.length === 0 ? (
+              <div className="bg-white p-12 text-center rounded-3xl border border-slate-200/80">
+                <CheckCircle2 className="w-12 h-12 text-slate-300 mx-auto mb-2" />
+                <h4 className="text-sm font-bold text-slate-700">No Leave Requests Pending</h4>
+                <p className="text-xs text-slate-400 mt-1">All staff are on duty and no leave applications are in the queue.</p>
+              </div>
+            ) : (
+              leaveRequests.map((leave) => (
               <div key={leave.id} className="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs">
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                   <div className="flex-1">
@@ -313,7 +320,7 @@ export default function HRDepartmentPage() {
                   </div>
                 </div>
               </div>
-            ))}
+            )))}
           </div>
         </div>
       )}

@@ -257,7 +257,14 @@ export default function StudentCounsellingPage() {
           <div className="lg:col-span-6 space-y-4">
             <h3 className="text-sm font-extrabold text-slate-900">Your Counselling Appointments</h3>
 
-            {myAppointments.map((app) => (
+            {myAppointments.length === 0 ? (
+              <div className="bg-white p-12 text-center rounded-3xl border border-slate-200/80">
+                <HeartHandshake className="w-12 h-12 text-slate-300 mx-auto mb-2" />
+                <h4 className="text-sm font-bold text-slate-700">No Appointments Booked</h4>
+                <p className="text-xs text-slate-400 mt-1">You have no active counselling appointments. Click "Book Private Session" to schedule a confidential talk.</p>
+              </div>
+            ) : (
+              myAppointments.map((app) => (
               <div
                 key={app.id}
                 className={`p-5 rounded-3xl border transition-all ${
@@ -300,7 +307,7 @@ export default function StudentCounsellingPage() {
                   </button>
                 </div>
               </div>
-            ))}
+            )))}
           </div>
 
           {/* Right: Direct Confidential Chat Thread */}
@@ -310,7 +317,7 @@ export default function StudentCounsellingPage() {
                 <h4 className="text-xs font-bold text-slate-900">
                   {activeAppForChat ? `Confidential Thread: ${activeAppForChat.id}` : 'Select a Session to Message'}
                 </h4>
-                <p className="text-[11px] text-slate-400">Direct encrypted channel with Dr. Maya Patel</p>
+                <p className="text-[11px] text-slate-400">Direct encrypted channel with Campus Counsellor</p>
               </div>
               <Lock className="w-4 h-4 text-teal-600" />
             </div>
@@ -323,7 +330,7 @@ export default function StudentCounsellingPage() {
                 </div>
               ) : (
                 activeAppForChat.messages?.map((msg, i) => {
-                  const isMe = msg.sender === (user?.name || 'Alex Rivera');
+                  const isMe = msg.sender === (user?.name || 'Student Member');
                   return (
                     <div key={i} className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
                       <div className={`max-w-xs px-3.5 py-2.5 rounded-2xl text-xs ${

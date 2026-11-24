@@ -264,16 +264,16 @@ export default function StudentPortalPage() {
                 />
                 <div>
                   <div className="flex items-center gap-2">
-                    <h2 className="text-xl font-black text-slate-900">{user?.name || 'Alex Rivera'}</h2>
+                    <h2 className="text-xl font-black text-slate-900">{user?.name || 'Student Member'}</h2>
                     <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
                       Regular Student
                     </span>
                   </div>
                   <p className="text-xs font-semibold text-slate-500 mt-1">
-                    Roll No: <span className="font-mono text-slate-700">{user?.rollNo || 'CS21B042'}</span> • ID: <span className="font-mono text-slate-700">{user?.id || 'STU-2024-001'}</span>
+                    Roll No: <span className="font-mono text-slate-700">{user?.rollNo || user?.id || 'STU-001'}</span> • ID: <span className="font-mono text-slate-700">{user?.id || 'STU-001'}</span>
                   </p>
                   <p className="text-xs text-slate-600 mt-1 font-medium">
-                    {user?.department || 'Computer Science & Engineering'} • {user?.semester || '6th Semester'}
+                    {user?.department || 'Computer Science & Engineering'} • {user?.semester || '1st Semester'}
                   </p>
                 </div>
               </div>
@@ -282,12 +282,12 @@ export default function StudentPortalPage() {
               <div className="grid grid-cols-3 gap-3 shrink-0">
                 <div className="p-3.5 bg-blue-50/70 border border-blue-100 rounded-2xl text-center">
                   <span className="text-[10px] font-bold text-blue-700 uppercase">CGPA</span>
-                  <p className="text-xl font-black text-blue-950 mt-0.5">{user?.cgpa || '3.85'}</p>
+                  <p className="text-xl font-black text-blue-950 mt-0.5">{user?.cgpa || '0.00'}</p>
                   <span className="text-[10px] text-blue-600">Scale of 4.0</span>
                 </div>
                 <div className="p-3.5 bg-emerald-50/70 border border-emerald-100 rounded-2xl text-center">
                   <span className="text-[10px] font-bold text-emerald-700 uppercase">Attendance</span>
-                  <p className="text-xl font-black text-emerald-950 mt-0.5">{user?.attendance || 91.5}%</p>
+                  <p className="text-xl font-black text-emerald-950 mt-0.5">{user?.attendance || 0}%</p>
                   <span className="text-[10px] text-emerald-600">Above 75% Min</span>
                 </div>
                 <div className="p-3.5 bg-purple-50/70 border border-purple-100 rounded-2xl text-center">
@@ -398,7 +398,7 @@ export default function StudentPortalPage() {
               <div className="flex items-center gap-3">
                 <div className="px-4 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-center">
                   <span className="text-[10px] font-bold uppercase">Aggregate</span>
-                  <p className="text-lg font-black">{user?.attendance || 91.5}%</p>
+                  <p className="text-lg font-black">{user?.attendance || 0}%</p>
                 </div>
                 <div className="px-4 py-2 rounded-xl bg-blue-50 border border-blue-200 text-blue-900 text-center">
                   <span className="text-[10px] font-bold uppercase">Status</span>
@@ -448,7 +448,7 @@ export default function StudentPortalPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs">
               <span className="text-xs font-bold text-slate-500 uppercase">Cumulative CGPA</span>
-              <p className="text-3xl font-black text-blue-700 mt-1">{user?.cgpa || '3.85'}</p>
+              <p className="text-3xl font-black text-blue-700 mt-1">{user?.cgpa || '0.00'}</p>
               <p className="text-xs text-slate-500 mt-1">Calculated from published course grades</p>
             </div>
             <div className="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs">

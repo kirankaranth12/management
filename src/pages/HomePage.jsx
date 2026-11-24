@@ -302,7 +302,12 @@ export default function HomePage() {
           </div>
 
           <div className="space-y-3">
-            {complaints.slice(0, 4).map((c) => (
+            {complaints.length === 0 ? (
+              <div className="p-8 text-center text-slate-400 text-xs bg-slate-50 rounded-2xl border border-slate-100">
+                No active complaints filed. All campus facilities are operational!
+              </div>
+            ) : (
+              complaints.slice(0, 4).map((c) => (
               <div
                 key={c.id}
                 onClick={() => {
@@ -350,7 +355,7 @@ export default function HomePage() {
                   </div>
                 </div>
               </div>
-            ))}
+            )))}
           </div>
         </div>
 
@@ -374,7 +379,12 @@ export default function HomePage() {
             </div>
 
             <div className="space-y-3">
-              {announcements.slice(0, 3).map((ann) => (
+              {announcements.length === 0 ? (
+                <div className="p-8 text-center text-slate-400 text-xs bg-slate-50 rounded-2xl border border-slate-100">
+                  No announcements published yet.
+                </div>
+              ) : (
+                announcements.slice(0, 3).map((ann) => (
                 <div key={ann.id} className="p-3 rounded-xl bg-slate-50 border border-slate-200/60">
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-[10px] font-bold text-purple-700 bg-purple-100 px-1.5 py-0.5 rounded">
@@ -390,7 +400,7 @@ export default function HomePage() {
                     Posted by: <strong className="text-slate-700">{ann.postedBy}</strong> ({ann.authorRole})
                   </div>
                 </div>
-              ))}
+              )))}
             </div>
           </div>
 

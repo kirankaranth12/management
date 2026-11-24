@@ -62,13 +62,13 @@ export default function AuthPage({ initialMode = 'register' }) {
 
   // Quick Demo Accounts
   const demoAccounts = [
-    { label: 'Student: Alex Rivera', id: 'STU-2024-001', pass: 'password123', role: 'Student' },
-    { label: 'Faculty: Dr. Sarah Jenkins', id: 'FAC-CS-101', pass: 'password123', role: 'Faculty' },
-    { label: 'Admin: Dean Vance', id: 'ADM-001', pass: 'password123', role: 'Admin' },
-    { label: 'Sanitation Lead: Rajesh', id: 'CLN-001', pass: 'password123', role: 'Cleaning' },
-    { label: 'HR Director: Priya', id: 'HR-001', pass: 'password123', role: 'HR' },
-    { label: 'Counsellor: Dr. Maya', id: 'CNS-001', pass: 'password123', role: 'Counselling' },
-    { label: 'Council Pres: Rohan', id: 'SL-001', pass: 'password123', role: 'StudentLeader' },
+    { label: 'Student Account', id: 'STU-001', pass: 'password123', role: 'Student' },
+    { label: 'Faculty Account', id: 'FAC-001', pass: 'password123', role: 'Faculty' },
+    { label: 'Admin Account', id: 'ADM-001', pass: 'password123', role: 'Admin' },
+    { label: 'Cleaning Staff', id: 'CLN-001', pass: 'password123', role: 'Cleaning' },
+    { label: 'HR Officer', id: 'HR-001', pass: 'password123', role: 'HR' },
+    { label: 'Counsellor', id: 'CNS-001', pass: 'password123', role: 'Counselling' },
+    { label: 'Student Leader', id: 'SL-001', pass: 'password123', role: 'StudentLeader' },
   ];
 
   // Handle Photo File Upload

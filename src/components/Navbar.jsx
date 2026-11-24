@@ -54,13 +54,13 @@ export default function Navbar() {
   }, []);
 
   const demoAccounts = [
-    { name: 'Alex Rivera', role: 'Student', id: 'STU-2024-001', pass: 'password123', desc: 'Computer Science Undergrad' },
-    { name: 'Dr. Sarah Jenkins', role: 'Faculty', id: 'FAC-CS-101', pass: 'password123', desc: 'Associate Professor & HOD' },
-    { name: 'Dean Robert Vance', role: 'Admin', id: 'ADM-001', pass: 'password123', desc: 'Dean of Administration' },
-    { name: 'Rajesh Kumar', role: 'Cleaning', id: 'CLN-001', pass: 'password123', desc: 'Sanitation Supervisor' },
-    { name: 'Priya Sharma', role: 'HR', id: 'HR-001', pass: 'password123', desc: 'Senior HR Director' },
-    { name: 'Dr. Maya Patel', role: 'Counselling', id: 'CNS-001', pass: 'password123', desc: 'Chief Clinical Counsellor' },
-    { name: 'Rohan Mehta', role: 'StudentLeader', id: 'SL-001', pass: 'password123', desc: 'Student Council President' }
+    { name: 'Student Member', role: 'Student', id: 'STU-001', pass: 'password123', desc: 'Student Workspace' },
+    { name: 'Faculty Member', role: 'Faculty', id: 'FAC-001', pass: 'password123', desc: 'Faculty Workspace' },
+    { name: 'Administrator', role: 'Admin', id: 'ADM-001', pass: 'password123', desc: 'Administration Workspace' },
+    { name: 'Sanitation Staff', role: 'Cleaning', id: 'CLN-001', pass: 'password123', desc: 'Sanitation Workspace' },
+    { name: 'HR Officer', role: 'HR', id: 'HR-001', pass: 'password123', desc: 'Human Resources Workspace' },
+    { name: 'Campus Counsellor', role: 'Counselling', id: 'CNS-001', pass: 'password123', desc: 'Counsellor Workspace' },
+    { name: 'Student Representative', role: 'StudentLeader', id: 'SL-001', pass: 'password123', desc: 'Student Council Workspace' }
   ];
 
   const handleQuickSwitch = async (acc) => {

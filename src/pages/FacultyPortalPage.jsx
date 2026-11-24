@@ -43,21 +43,17 @@ export default function FacultyPortalPage() {
   
   // Interactive Roster for Attendance
   const [roster, setRoster] = useState([
-    { id: 'STU-2024-001', name: 'Alex Rivera', rollNo: 'CS21B042', status: 'Present' },
-    { id: 'STU-2024-002', name: 'Emily Chen', rollNo: 'CS21B018', status: 'Present' },
-    { id: 'STU-2024-003', name: 'David Kim', rollNo: 'CS21B029', status: 'Present' },
-    { id: 'STU-2024-004', name: 'Sophia Taylor', rollNo: 'CS21B055', status: 'Absent' },
-    { id: 'STU-2024-005', name: 'Zack Robinson', rollNo: 'CS21B061', status: 'Present' }
+    { id: 'STU-001', name: 'Student 1', rollNo: 'STU-001', status: 'Present' },
+    { id: 'STU-002', name: 'Student 2', rollNo: 'STU-002', status: 'Present' },
+    { id: 'STU-003', name: 'Student 3', rollNo: 'STU-003', status: 'Present' }
   ]);
 
   // ==================== MARKS & GRADING STATE ====================
   const [gradingCourse, setGradingCourse] = useState('CS-301');
   const [marksRoster, setMarksRoster] = useState([
-    { studentId: 'STU-2024-001', studentName: 'Alex Rivera', rollNo: 'CS21B042', internalMarks: 28, examMarks: 63, totalMarks: 91, maxMarks: 100, grade: 'A', remarks: 'Exceptional consistency in lab and theory.' },
-    { studentId: 'STU-2024-002', studentName: 'Emily Chen', rollNo: 'CS21B018', internalMarks: 26, examMarks: 59, totalMarks: 85, maxMarks: 100, grade: 'A', remarks: 'Great project implementation.' },
-    { studentId: 'STU-2024-003', studentName: 'David Kim', rollNo: 'CS21B029', internalMarks: 24, examMarks: 54, totalMarks: 78, maxMarks: 100, grade: 'B+', remarks: 'Good grasp of tree balancing.' },
-    { studentId: 'STU-2024-004', studentName: 'Sophia Taylor', rollNo: 'CS21B055', internalMarks: 22, examMarks: 46, totalMarks: 68, maxMarks: 100, grade: 'B', remarks: 'Needs more practice on graph algorithms.' },
-    { studentId: 'STU-2024-005', studentName: 'Zack Robinson', rollNo: 'CS21B061', internalMarks: 25, examMarks: 57, totalMarks: 82, maxMarks: 100, grade: 'A', remarks: 'Solid midterm performance.' }
+    { studentId: 'STU-001', studentName: 'Student 1', rollNo: 'STU-001', internalMarks: 0, examMarks: 0, totalMarks: 0, maxMarks: 100, grade: '-', remarks: '' },
+    { studentId: 'STU-002', studentName: 'Student 2', rollNo: 'STU-002', internalMarks: 0, examMarks: 0, totalMarks: 0, maxMarks: 100, grade: '-', remarks: '' },
+    { studentId: 'STU-003', studentName: 'Student 3', rollNo: 'STU-003', internalMarks: 0, examMarks: 0, totalMarks: 0, maxMarks: 100, grade: '-', remarks: '' }
   ]);
   const [isSavingMarks, setIsSavingMarks] = useState(false);
 

@@ -278,7 +278,16 @@ export default function CleaningDepartmentPage() {
 
           {/* Tasks Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {filteredTasks.map((task) => (
+            {filteredTasks.length === 0 ? (
+              <div className="col-span-full bg-white p-12 text-center rounded-3xl border border-slate-200/80">
+                <Sparkles className="w-12 h-12 text-slate-300 mx-auto mb-2" />
+                <h4 className="text-sm font-bold text-slate-700">No Cleaning Tasks Found</h4>
+                <p className="text-xs text-slate-400 mt-1">
+                  All areas are currently clean and inspected. Click "Log Cleaning Task" to report an area.
+                </p>
+              </div>
+            ) : (
+              filteredTasks.map((task) => (
               <div
                 key={task.id}
                 className="bg-white rounded-3xl border border-slate-200/80 p-5 shadow-xs flex flex-col justify-between hover:border-amber-300 transition-all"
@@ -383,7 +392,7 @@ export default function CleaningDepartmentPage() {
                   )}
                 </div>
               </div>
-            ))}
+            )))}
           </div>
         </div>
       )}
@@ -396,7 +405,16 @@ export default function CleaningDepartmentPage() {
           </div>
 
           <div className="space-y-4">
-            {studentCleaningComplaints.map((c) => (
+            {studentCleaningComplaints.length === 0 ? (
+              <div className="bg-white p-12 text-center rounded-3xl border border-slate-200/80">
+                <CheckCircle2 className="w-12 h-12 text-slate-300 mx-auto mb-2" />
+                <h4 className="text-sm font-bold text-slate-700">No Student Cleaning Complaints</h4>
+                <p className="text-xs text-slate-400 mt-1">
+                  No issues reported by students for sanitation. Everything is in order!
+                </p>
+              </div>
+            ) : (
+              studentCleaningComplaints.map((c) => (
               <div key={c.id} className="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs">
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                   <div className="flex-1">
@@ -442,7 +460,7 @@ export default function CleaningDepartmentPage() {
                     <div className="flex items-center gap-2 mt-2">
                       {c.status !== 'In Progress' && c.status !== 'Resolved' && (
                         <button
-                          onClick={() => updateComplaintStatus(c.id, 'In Progress', 'Sanitation crew dispatched to location.', c.assignedTo || 'Rajesh Kumar')}
+                          onClick={() => updateComplaintStatus(c.id, 'In Progress', 'Sanitation crew dispatched to location.', c.assignedTo || 'Sanitation Staff')}
                           className="px-3 py-1.5 text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-xs"
                         >
                           Dispatch Crew
@@ -450,7 +468,7 @@ export default function CleaningDepartmentPage() {
                       )}
                       {c.status !== 'Resolved' && (
                         <button
-                          onClick={() => updateComplaintStatus(c.id, 'Resolved', 'Area thoroughly sanitized, deep cleaned and verified by supervisor.', c.assignedTo || 'Rajesh Kumar')}
+                          onClick={() => updateComplaintStatus(c.id, 'Resolved', 'Area thoroughly sanitized, deep cleaned and verified by supervisor.', c.assignedTo || 'Sanitation Staff')}
                           className="px-3 py-1.5 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg shadow-xs flex items-center gap-1"
                         >
                           <Check className="w-3.5 h-3.5" />
@@ -461,7 +479,7 @@ export default function CleaningDepartmentPage() {
                   </div>
                 </div>
               </div>
-            ))}
+            )))}
           </div>
         </div>
       )}

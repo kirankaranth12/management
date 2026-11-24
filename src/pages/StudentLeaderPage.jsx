@@ -222,7 +222,14 @@ export default function StudentLeaderPage() {
           <div className="lg:col-span-7 space-y-4">
             <h3 className="text-sm font-extrabold text-slate-900">Student Suggestions & Council Responses</h3>
 
-            {suggestions.map((sug) => {
+            {suggestions.length === 0 ? (
+              <div className="bg-white p-12 text-center rounded-3xl border border-slate-200/80">
+                <Sparkles className="w-12 h-12 text-slate-300 mx-auto mb-2" />
+                <h4 className="text-sm font-bold text-slate-700">No Suggestions Yet</h4>
+                <p className="text-xs text-slate-400 mt-1">Be the first to submit a suggestion to the Student Council!</p>
+              </div>
+            ) : (
+              suggestions.map((sug) => {
               const hasUpvoted = sug.upvotedBy?.includes(user?.id || 'STU-2024-001');
 
               return (
@@ -266,7 +273,7 @@ export default function StudentLeaderPage() {
                   </div>
                 </div>
               );
-            })}
+            }))}
           </div>
 
         </div>
@@ -275,33 +282,41 @@ export default function StudentLeaderPage() {
       {/* ===================== TAB 3: CAMPUS EVENT COORDINATION ===================== */}
       {activeTab === 'events' && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {events.map((evt) => (
-            <div key={evt.id} className="bg-white rounded-3xl border border-slate-200/80 p-5 shadow-xs flex flex-col justify-between">
-              <div>
-                <span className="text-[10px] font-mono font-bold text-indigo-700 bg-indigo-100 px-2 py-0.5 rounded">
-                  {evt.category}
-                </span>
-                <h4 className="text-sm font-bold text-slate-900 mt-2">{evt.title}</h4>
-                <p className="text-xs text-slate-500 mt-1">📅 {evt.date} • {evt.time}</p>
-                <p className="text-xs text-slate-500">📍 {evt.venue}</p>
-                <p className="text-xs text-slate-600 mt-2.5 leading-relaxed bg-slate-50 p-2.5 rounded-xl border">
-                  {evt.description}
-                </p>
-              </div>
-
-              <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-700">
-                  {evt.registeredCount} / {evt.maxCapacity} Registered
-                </span>
-                <button
-                  onClick={() => registerForEvent(evt.id)}
-                  className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-xs transition-colors"
-                >
-                  Register
-                </button>
-              </div>
+          {events.length === 0 ? (
+            <div className="col-span-full bg-white p-12 text-center rounded-3xl border border-slate-200/80">
+              <Calendar className="w-12 h-12 text-slate-300 mx-auto mb-2" />
+              <h4 className="text-sm font-bold text-slate-700">No Events Scheduled</h4>
+              <p className="text-xs text-slate-400 mt-1">There are no upcoming campus events currently scheduled.</p>
             </div>
-          ))}
+          ) : (
+            events.map((evt) => (
+              <div key={evt.id} className="bg-white rounded-3xl border border-slate-200/80 p-5 shadow-xs flex flex-col justify-between">
+                <div>
+                  <span className="text-[10px] font-mono font-bold text-indigo-700 bg-indigo-100 px-2 py-0.5 rounded">
+                    {evt.category}
+                  </span>
+                  <h4 className="text-sm font-bold text-slate-900 mt-2">{evt.title}</h4>
+                  <p className="text-xs text-slate-500 mt-1">📅 {evt.date} • {evt.time}</p>
+                  <p className="text-xs text-slate-500">📍 {evt.venue}</p>
+                  <p className="text-xs text-slate-600 mt-2.5 leading-relaxed bg-slate-50 p-2.5 rounded-xl border">
+                    {evt.description}
+                  </p>
+                </div>
+
+                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+                  <span className="text-xs font-bold text-slate-700">
+                    {evt.registeredCount} / {evt.maxCapacity} Registered
+                  </span>
+                  <button
+                    onClick={() => registerForEvent(evt.id)}
+                    className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-xs transition-colors"
+                  >
+                    Register
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       )}
 
@@ -309,7 +324,7 @@ export default function StudentLeaderPage() {
       {activeTab === 'liaison' && (
         <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
           <h3 className="text-base font-black text-slate-900">Formal Council Petitions to College Leadership</h3>
-          <p className="text-xs text-slate-500">Documented memoranda exchanged with Dean Robert Vance and Academic Council.</p>
+          <p className="text-xs text-slate-500">Documented memoranda exchanged with College Leadership and Academic Council.</p>
 
           <div className="space-y-3">
             <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/80">

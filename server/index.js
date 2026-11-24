@@ -1077,13 +1077,13 @@ app.post('/api/academics/marks', (req, res) => {
     return 0.0;
   };
 
-  // If this course exists in studentCourses for Alex Rivera (STU-2024-001), update marks and grade
+  // Update marks and grade for course
   const targetCourse = db.data.academicData.studentCourses.find(c => c.code === courseCode);
-  const alexMark = studentMarks.find(m => m.studentId === 'STU-2024-001');
+  const primaryMark = studentMarks[0];
 
-  if (targetCourse && alexMark) {
-    targetCourse.marks = `${alexMark.totalMarks || (Number(alexMark.internalMarks || 0) + Number(alexMark.examMarks || 0))}/100`;
-    targetCourse.grade = alexMark.grade;
+  if (targetCourse && primaryMark) {
+    targetCourse.marks = `${primaryMark.totalMarks || (Number(primaryMark.internalMarks || 0) + Number(primaryMark.examMarks || 0))}/100`;
+    targetCourse.grade = primaryMark.grade;
 
     // Recalculate student's CGPA
     let totalCredits = 0;
@@ -1094,14 +1094,14 @@ app.post('/api/academics/marks', (req, res) => {
       weightedPoints += cr * gradeToPoint(c.grade);
     });
 
-    const newCGPA = (weightedPoints / totalCredits).toFixed(2);
-    const alexUser = db.data.users.find(u => u.id === 'STU-2024-001');
-    if (alexUser) {
-      alexUser.cgpa = newCGPA;
+    const newCGPA = totalCredits > 0 ? (weightedPoints / totalCredits).toFixed(2) : '0.00';
+    const studentUser = db.data.users.find(u => u.id === primaryMark.studentId || u.role === 'Student');
+    if (studentUser) {
+      studentUser.cgpa = newCGPA;
     }
 
     createNotification({
-      userId: 'STU-2024-001',
+      userId: primaryMark.studentId || 'all',
       targetRole: 'Student',
       title: `Marks & Grade Published for ${courseCode}`,
       message: `Faculty updated marks for ${targetCourse.name}: ${targetCourse.marks} (Grade: ${targetCourse.grade}). New CGPA: ${newCGPA}`,
@@ -1121,7 +1121,7 @@ app.post('/api/academics/marks', (req, res) => {
 
 // Grade Assignment
 app.post('/api/academics/grade-assignment', (req, res) => {
-  const { assignmentId, studentId = 'STU-2024-001', studentName = 'Alex Rivera', marks, maxMarks = 50, feedback = 'Well done!' } = req.body;
+  const { assignmentId, studentId = 'STU-001', studentName = 'Student Member', marks, maxMarks = 50, feedback = 'Well done!' } = req.body;
 
   createNotification({
     userId: studentId,
@@ -1139,7 +1139,6 @@ app.post('/api/academics/grade-assignment', (req, res) => {
 // Mark student attendance
 app.post('/api/academics/attendance', (req, res) => {
   const { courseCode, date, attendanceRoster } = req.body;
-  // attendanceRoster: [{ id, status: 'Present' | 'Absent' }]
   if (Array.isArray(attendanceRoster)) {
     attendanceRoster.forEach(record => {
       const student = db.data.academicData.studentRoster.find(s => s.id === record.id);
@@ -1148,20 +1147,19 @@ app.post('/api/academics/attendance', (req, res) => {
       }
     });
 
-    // Recalculate student course attendance if student course matches
     const course = db.data.academicData.studentCourses.find(c => c.code === courseCode);
     if (course) {
-      course.totalClasses += 1;
-      const myRecord = attendanceRoster.find(r => r.id === 'STU-2024-001');
-      if (myRecord && myRecord.status === 'Present') {
-        course.attendedClasses += 1;
+      course.totalClasses = (course.totalClasses || 0) + 1;
+      const anyPresent = attendanceRoster.some(r => r.status === 'Present');
+      if (anyPresent) {
+        course.attendedClasses = (course.attendedClasses || 0) + 1;
       }
-      course.attendance = Math.round((course.attendedClasses / course.totalClasses) * 100);
+      course.attendance = course.totalClasses > 0 ? Math.round((course.attendedClasses / course.totalClasses) * 100) : 0;
     }
   }
 
   createNotification({
-    userId: 'STU-2024-001',
+    userId: 'all',
     targetRole: 'Student',
     title: `Attendance Updated for ${courseCode || 'Class'}`,
     message: `Faculty marked attendance for ${date || 'today'}. Check your portal for updated metrics.`,

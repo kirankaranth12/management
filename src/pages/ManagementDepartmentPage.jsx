@@ -337,7 +337,14 @@ export default function ManagementDepartmentPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {filteredComplaints.map((c) => (
+                  {filteredComplaints.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="p-8 text-center text-slate-400">
+                        No complaints filed. All campus operations are clear!
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredComplaints.map((c) => (
                     <tr key={c.id} className="hover:bg-slate-50/70 transition-colors">
                       <td className="p-3.5">
                         <span className="font-mono font-bold text-blue-700 bg-blue-100 px-1.5 py-0.5 rounded">
@@ -385,7 +392,7 @@ export default function ManagementDepartmentPage() {
                         </div>
                       </td>
                     </tr>
-                  ))}
+                  )))}
                 </tbody>
               </table>
             </div>
