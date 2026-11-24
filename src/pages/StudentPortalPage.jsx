@@ -20,7 +20,8 @@ import {
   Filter,
   Check,
   Eye,
-  Info
+  Info,
+  Download
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
@@ -455,13 +456,13 @@ export default function StudentPortalPage() {
             </div>
             <div className="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs">
               <span className="text-xs font-bold text-slate-500 uppercase">Completed Credits</span>
-              <p className="text-3xl font-black text-emerald-700 mt-1">112 / 160</p>
-              <p className="text-xs text-slate-500 mt-1">On track for graduation May 2027</p>
+              <p className="text-3xl font-black text-emerald-700 mt-1">0 / 160</p>
+              <p className="text-xs text-slate-500 mt-1">Enrolled for current academic semester</p>
             </div>
             <div className="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs">
               <span className="text-xs font-bold text-slate-500 uppercase">Degree Program</span>
-              <p className="text-lg font-bold text-purple-900 mt-1">B.Tech in CSE</p>
-              <p className="text-xs text-slate-500 mt-1">Dean's Honor List (Fall 2025)</p>
+              <p className="text-lg font-bold text-purple-900 mt-1">{user?.department || 'Computer Science & Engineering'}</p>
+              <p className="text-xs text-slate-500 mt-1">Academic Year 2026-2027</p>
             </div>
           </div>
 
@@ -501,11 +502,45 @@ export default function StudentPortalPage() {
                           {c.grade}
                         </span>
                       </td>
-                      <td className="p-3.5 text-emerald-600 font-bold">Passed</td>
+                      <td className="p-3.5 text-slate-600 font-semibold">{c.marks !== '0/100' ? 'Graded' : 'Enrolled'}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+            </div>
+          </div>
+
+          {/* Course Study Documents & Materials Shared by Faculty */}
+          <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div>
+                <h3 className="text-sm font-extrabold text-slate-900">Faculty Course Materials & Syllabus Documents</h3>
+                <p className="text-xs text-slate-500">Official syllabus outlines and course learning materials published by faculty.</p>
+              </div>
+              <span className="text-xs font-bold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-200">
+                Academic Resources
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {courses.map((c) => (
+                <div key={c.code} className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <span className="font-mono text-[10px] font-bold text-blue-700 bg-blue-100 px-1.5 py-0.5 rounded">
+                      {c.code}
+                    </span>
+                    <h4 className="text-xs font-bold text-slate-900 mt-1 truncate">{c.name}</h4>
+                    <p className="text-[11px] text-slate-500 mt-0.5">Faculty: {c.faculty}</p>
+                  </div>
+                  <button
+                    onClick={() => showToast(`Downloaded syllabus document for ${c.code}`, 'success')}
+                    className="shrink-0 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition-all shadow-xs flex items-center gap-1"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    Syllabus
+                  </button>
+                </div>
+              ))}
             </div>
           </div>
         </div>
